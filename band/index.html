@@ -1,0 +1,1625 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Hearing Silence Band</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Spectral:ital,wght@0,300;0,400;1,300&display=swap">
+<script>
+  document.documentElement.classList.add('js');
+  if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('rm');
+</script>
+<style>
+/* Layout: store first, with one live 3D band that travels with the scroll (hero → product → system, then the privacy ring).
+   The band renders in a fixed layer above section backgrounds and below text. One committed look:
+   night chrome, paper shop floor, brass only for the signal. */
+:root {
+  --night: #000408;
+  --night-2: #071017;
+  --night-ink: #EEF3F6;
+  --night-mute: #93A5B0;
+  --night-line: #1A252C;
+  --paper: #F3F5F6;
+  --tile: #E6ECEF;
+  --ink: #0D1519;
+  --mute: #55687A;
+  --line: #D3DCE1;
+  --brass: #E8A64B;
+  --brass-ink: #8A5212;
+  --display: 'Spectral', Georgia, 'Times New Roman', serif;
+  --body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  --nav-h: 64px;
+  color-scheme: dark;
+}
+html { -webkit-text-size-adjust: 100%; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+body { background: var(--night); color: var(--night-ink); font: 400 16px/1.55 var(--body); -webkit-font-smoothing: antialiased; overflow-x: clip; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 40; background: var(--night); }
+.on-band body { cursor: pointer; }
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+button { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--brass); outline-offset: 3px; border-radius: 6px; }
+h1, h2, h3, p, figure, ul, ol, dl, dd { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.wrap {
+  max-width: 1240px; margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+@media (min-width: 720px) { .wrap { padding-left: max(40px, env(safe-area-inset-left, 0px)); padding-right: max(40px, env(safe-area-inset-right, 0px)); } }
+
+.eyebrow { font: 500 12px/1.4 var(--mono); letter-spacing: 0.16em; text-transform: uppercase; color: var(--mute); }
+.dark .eyebrow { color: var(--night-mute); }
+.h-display { font: 300 clamp(34px, 4.6vw, 64px)/1.05 var(--display); letter-spacing: -0.012em; text-wrap: balance; }
+.h-display em { font-style: italic; }
+
+/* the live 3D layer */
+.gl-canvas { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; opacity: 0; transition: opacity .9s ease; }
+.gl-canvas.on { opacity: var(--gl-o, 1); }
+.gl-canvas.live { transition: none; }
+
+/* buttons */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 24px; border-radius: 999px; border: 0; font: 500 15px/1 var(--body); text-decoration: none; cursor: pointer; white-space: nowrap; transition: background-color .2s ease, box-shadow .2s ease, transform .2s ease; }
+.btn:active { transform: scale(0.98); }
+.btn-brass { background: var(--brass); color: var(--ink); }
+.btn-brass:hover { background: #F2BB6A; }
+.btn-ink { background: var(--ink); color: var(--paper); }
+.btn-ink:hover { background: #1E2B33; }
+.btn-ghost { background: transparent; color: var(--night-ink); box-shadow: inset 0 0 0 1px rgba(238, 243, 246, 0.3); }
+.btn-ghost:hover { box-shadow: inset 0 0 0 1px rgba(238, 243, 246, 0.7); }
+.btn-line { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--line); }
+.btn-line:hover { box-shadow: inset 0 0 0 1px var(--ink); }
+.btn-sm { min-height: 40px; padding: 0 16px; font-size: 14px; }
+.btn-wide { width: 100%; }
+.link-btn { background: none; border: 0; padding: 0; color: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; min-height: 32px; }
+
+/* announcement + nav */
+.announce { background: #0B1318; color: var(--night-mute); font-size: 13px; text-align: center; padding-block: 9px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.announce a { color: var(--brass); text-decoration: none; margin-left: 6px; }
+.announce a:hover { text-decoration: underline; }
+.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30; background: rgba(0, 4, 8, 0.86); -webkit-backdrop-filter: blur(14px) saturate(140%); backdrop-filter: blur(14px) saturate(140%); border-bottom: 1px solid rgba(238, 243, 246, 0.07); }
+.nav-inner { max-width: 1240px; margin-inline: auto; height: var(--nav-h); display: flex; align-items: center; gap: 28px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+@media (min-width: 720px) { .nav-inner { padding-left: max(40px, env(safe-area-inset-left, 0px)); padding-right: max(40px, env(safe-area-inset-right, 0px)); } }
+.logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--night-ink); }
+.wordmark { font: 400 20px/1 var(--display); letter-spacing: 0.01em; white-space: nowrap; }
+.nav-links { display: flex; gap: 26px; margin-left: 12px; }
+.nav-links a { font-size: 14px; color: var(--night-mute); text-decoration: none; }
+.nav-links a:hover { color: var(--night-ink); }
+.nav-end { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+.bag-btn { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; border-radius: 50%; border: 0; background: transparent; color: var(--night-ink); cursor: pointer; }
+.bag-btn:hover { background: rgba(238, 243, 246, 0.08); }
+.bag-btn svg { width: 22px; height: 22px; }
+.bag-count { position: absolute; top: 4px; right: 2px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px; background: var(--brass); color: var(--ink); font: 600 11px/18px var(--body); text-align: center; }
+.bag-count[data-n="0"] { display: none; }
+@media (max-width: 900px) { .nav-links { display: none; } }
+@media (max-width: 420px) { .nav-end .btn { display: none; } }
+
+/* the 3D emblem: stacked rings that turn with the scroll */
+.mark3d { --s: 1; position: relative; width: calc(26px * var(--s)); height: calc(26px * var(--s)); flex: none; perspective: calc(120px * var(--s)); }
+.mark3d-lg { --s: 1.9; }
+.m3 { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateX(var(--m-tilt, 0deg)) rotateY(var(--m-spin, 0deg)); }
+.m3 i { position: absolute; inset: calc(3.15px * var(--s)); border-radius: 50%; border: calc(1.8px * var(--s)) solid var(--ml, currentColor);
+  -webkit-mask: conic-gradient(from 30deg, #000 0deg 300deg, transparent 300deg 360deg);
+  mask: conic-gradient(from 30deg, #000 0deg 300deg, transparent 300deg 360deg); }
+.m3 i:nth-child(1) { transform: translateZ(calc(-2.4px * var(--s))); }
+.m3 i:nth-child(2) { transform: translateZ(calc(-1.6px * var(--s))); --ml: #c9d3d9; }
+.m3 i:nth-child(3) { transform: translateZ(calc(-0.8px * var(--s))); --ml: #98a6ae; }
+.m3 i:nth-child(4) { transform: translateZ(0px); --ml: #7b8a93; }
+.m3 i:nth-child(5) { transform: translateZ(calc(0.8px * var(--s))); --ml: #98a6ae; }
+.m3 i:nth-child(6) { transform: translateZ(calc(1.6px * var(--s))); --ml: #c9d3d9; }
+.m3 i:nth-child(7) { transform: translateZ(calc(2.4px * var(--s))); }
+.m3 b { position: absolute; left: calc(10.9px * var(--s)); top: calc(1.95px * var(--s)); width: calc(4.2px * var(--s)); height: calc(4.2px * var(--s)); border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffe3b4, #e8a64b 55%, #a2641c); transform: rotateY(calc(var(--m-spin, 0deg) * -1)); }
+
+/* ---------- hero ---------- */
+.film { position: relative; background: var(--night); }
+.film-stage { position: relative; }
+#film { display: block; width: 100%; height: 64vh; height: 64svh; }
+html:not(.js) #film { display: none; }
+.film-poster { width: min(100%, 760px); margin: 24px auto 0; }
+.js .film-poster { display: none; }
+.hero-slot { display: none; }
+.film-copy { position: relative; text-align: center; display: grid; justify-items: center; gap: 14px; padding-block: 8px 72px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.film-copy .eyebrow { color: var(--brass); }
+/* the logo sits above the title at rest; the story beats take its place while the hero plays */
+.hero-mark { display: grid; place-items: center; min-height: 50px; }
+.hero-mark > * { grid-area: 1 / 1; }
+.hero-mark .mark3d { color: var(--night-ink); transition: opacity .45s ease, transform .45s ease; }
+.hero-mark .beat { opacity: 0; transition: opacity .45s ease; }
+.hero-mark.beats .mark3d { opacity: 0; transform: scale(0.6); }
+.hero-mark.beats .beat { opacity: 1; }
+.beat.swap { animation: beatIn .45s ease both; }
+@keyframes beatIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.film-title { font: 300 clamp(44px, 6.4vw, 104px)/0.98 var(--display); letter-spacing: -0.02em; color: var(--night-ink); text-wrap: balance; }
+.film-tag { font-size: clamp(17px, 1.5vw, 20px); color: var(--night-mute); }
+.film-ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin-top: 10px; }
+.film-bar { width: 140px; height: 1px; background: var(--night-line); overflow: hidden; margin-top: 14px; }
+.film-fill { display: block; height: 100%; background: var(--brass); transform-origin: left; transform: scaleX(0); }
+.js:not(.rm) .film { height: 300vh; height: 300svh; }
+.js:not(.rm) .film-stage { position: sticky; z-index: 2; top: calc(env(safe-area-inset-top, 0px) + var(--nav-h)); height: calc(100vh - var(--nav-h)); height: calc(100svh - var(--nav-h) - env(safe-area-inset-top, 0px)); overflow: hidden; display: flex; flex-direction: column; }
+.js:not(.rm) #film { position: absolute; inset: 0; height: 100%; }
+.js:not(.rm) .hero-slot { display: block; position: relative; flex: 1 1 auto; min-height: 0; }
+.js:not(.rm) .film-copy { padding-block: 0 max(36px, calc(env(safe-area-inset-bottom, 0px) + 28px)); }
+.rm .film-bar, html:not(.js) .film-bar { display: none; }
+.gl .film-poster { display: none !important; }
+#film { transition: opacity .9s ease; } .js:not(.rm):not(.film-on) #film { opacity: 0; }
+.gl #film { opacity: 0; }
+/* safety net: if no script manages to draw the hero, a still of the band fades in */
+.slot-poster { display: none; }
+.js:not(.rm) .slot-poster { display: block; position: absolute; left: 50%; top: 50%; height: 100%; width: auto; max-width: none; aspect-ratio: 1 / 1; transform: translate(-50%, -50%); opacity: 0; animation: posterIn .6s ease 4s forwards; pointer-events: none; }
+.hero-live .slot-poster { display: none !important; }
+@keyframes posterIn { to { opacity: 1; } }
+
+/* ---------- product page ---------- */
+.shop-floor { background: var(--paper); color: var(--ink); }
+.pdp { padding-block: clamp(56px, 7vw, 104px); }
+.pdp-grid { display: grid; grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: clamp(28px, 4vw, 64px); align-items: start; }
+@media (max-width: 920px) { .pdp-grid { grid-template-columns: minmax(0, 1fr); } }
+.gallery { display: grid; gap: 12px; }
+.g-main { position: relative; aspect-ratio: 1 / 1; max-width: 100%; background: var(--tile); border-radius: 22px; overflow: hidden; display: grid; place-items: center; }
+.g-main > img { width: 86%; height: 86%; object-fit: contain; transition: opacity .25s ease; }
+.g-main > img.is-loading { opacity: 0.35; }
+.g-tag { position: absolute; z-index: 2; top: 16px; left: 16px; font: 500 11px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--mute); background: rgba(255, 255, 255, 0.7); padding: 7px 10px; border-radius: 999px; }
+.gl .g-main > img { visibility: hidden; }
+.gl .g-main { cursor: grab; touch-action: pan-y; }
+.gl .g-main.dragging { cursor: grabbing; }
+.g-thumbs { position: relative; z-index: 2; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+.g-thumb { aspect-ratio: 1 / 1; max-width: 100%; padding: 0; border: 0; border-radius: 14px; background: var(--tile); cursor: pointer; display: grid; place-items: center; overflow: hidden; box-shadow: inset 0 0 0 1px transparent; transition: box-shadow .2s ease; }
+.g-thumb img { width: 82%; height: 82%; object-fit: contain; }
+.g-thumb[aria-pressed="true"] { box-shadow: inset 0 0 0 2px var(--ink); }
+.gl-hint { display: none; position: relative; z-index: 2; font: 500 11.5px/1.4 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--mute); }
+.gl .gl-hint { display: block; }
+.buy { position: relative; z-index: 2; display: grid; gap: 22px; }
+.buy-head { display: grid; gap: 6px; }
+.buy-title { font: 300 clamp(34px, 3.6vw, 52px)/1.04 var(--display); letter-spacing: -0.012em; }
+.price { font: 500 15px/1.4 var(--body); color: var(--ink); }
+.price small { color: var(--mute); font-weight: 400; }
+.opt { display: grid; gap: 12px; border: 0; padding: 0; margin: 0; }
+.opt-head { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; width: 100%; padding: 0; }
+.opt-head b { font-weight: 600; }
+.opt-head span { color: var(--mute); }
+.swatches { display: flex; flex-wrap: wrap; gap: 10px; }
+.radio { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.sw { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; cursor: pointer; box-shadow: inset 0 0 0 1px transparent; transition: box-shadow .2s ease, transform .2s ease; }
+.sw:hover { transform: translateY(-2px); }
+.sw span { width: 34px; height: 34px; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(13, 21, 25, 0.16); }
+.radio:checked + .sw { box-shadow: inset 0 0 0 2px var(--ink); }
+.radio:focus-visible + .sw { outline: 2px solid var(--brass); outline-offset: 2px; }
+.sizes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.sz { display: grid; gap: 2px; justify-items: center; padding: 12px 8px; border-radius: 14px; box-shadow: inset 0 0 0 1px var(--line); cursor: pointer; background: #fff; }
+.sz b { font-size: 16px; font-weight: 600; }
+.sz small { font-size: 12px; color: var(--mute); }
+.radio:checked + .sz { box-shadow: inset 0 0 0 2px var(--ink); }
+.radio:focus-visible + .sz { outline: 2px solid var(--brass); outline-offset: 2px; }
+.assure { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: var(--mute); }
+.assure li { display: inline-flex; align-items: center; gap: 8px; }
+.assure li::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--brass-ink); }
+.acc { border-top: 1px solid var(--line); }
+.acc details { border-bottom: 1px solid var(--line); }
+.acc summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 52px; font-weight: 500; }
+.acc summary::-webkit-details-marker { display: none; }
+.acc summary::after { content: "+"; font: 400 22px/1 var(--body); color: var(--mute); transition: transform .2s ease; }
+.acc details[open] summary::after { transform: rotate(45deg); }
+.acc details p { padding-bottom: 18px; color: var(--mute); max-width: 52ch; }
+.added { font-size: 14px; color: var(--brass-ink); min-height: 1.4em; }
+
+/* ---------- system ---------- */
+.system { background: var(--paper); color: var(--ink); padding-block: clamp(24px, 4vw, 48px) clamp(64px, 8vw, 112px); }
+.system-media { background: var(--tile); border-radius: 26px; overflow: hidden; aspect-ratio: 20 / 13; max-width: 100%; }
+.system-media img { width: 100%; height: 100%; object-fit: cover; }
+.gl .system-media img { visibility: hidden; }
+.cap-row { position: relative; z-index: 2; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 12px 32px; margin-top: 22px; }
+.cap-row p { color: var(--mute); max-width: 48ch; }
+
+/* ---------- bands grid ---------- */
+.bands { background: var(--paper); color: var(--ink); padding-block: clamp(56px, 7vw, 104px); border-top: 1px solid var(--line); }
+.bands-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 16px 24px; margin-bottom: 28px; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip-btn { min-height: 40px; padding: 0 16px; border-radius: 999px; border: 0; background: #fff; box-shadow: inset 0 0 0 1px var(--line); cursor: pointer; font-size: 14px; }
+.chip-btn[aria-pressed="true"] { background: var(--ink); color: var(--paper); box-shadow: none; }
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(14px, 2vw, 24px); }
+@media (max-width: 920px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 520px) { .grid { gap: 12px; } }
+.card { display: grid; gap: 14px; align-content: start; }
+.card-media { aspect-ratio: 1 / 1; max-width: 100%; border: 0; padding: 0; border-radius: 20px; background: var(--tile); display: grid; place-items: center; overflow: hidden; cursor: pointer;
+  transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .3s cubic-bezier(.2, .7, .3, 1), box-shadow .3s ease; }
+.card-media:hover { box-shadow: 0 22px 44px -28px rgba(13, 21, 25, 0.45); }
+.card-media img { width: 84%; height: 84%; object-fit: contain; transition: transform .45s ease; }
+.card-media:hover img { transform: scale(1.045); }
+.card-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.card h3 { font: 500 17px/1.3 var(--body); }
+.card .price { font-size: 13px; color: var(--mute); font-weight: 400; white-space: nowrap; }
+.card-desc { font-size: 13.5px; color: var(--mute); }
+.card-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+@media (max-width: 520px) { .card .price { display: none; } .card-actions .btn { width: 100%; } }
+
+/* ---------- details (dark) ---------- */
+.details { background: var(--night); color: var(--night-ink); padding-block: clamp(64px, 8vw, 120px); }
+.tiles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 20px); }
+@media (max-width: 860px) { .tiles { grid-template-columns: minmax(0, 1fr); } }
+.tile { position: relative; border-radius: 22px; overflow: hidden; background: #060a0d; aspect-ratio: 4 / 5; max-width: 100%; border: 1px solid rgba(238, 243, 246, 0.08); }
+@media (max-width: 860px) { .tile { aspect-ratio: 4 / 3; } }
+.tile img { width: 100%; height: 100%; object-fit: cover; }
+.tile figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 48px 22px 20px; background: linear-gradient(180deg, rgba(0, 4, 8, 0), rgba(0, 4, 8, 0.78)); display: grid; gap: 2px; }
+.tile figcaption b { font: 500 17px/1.3 var(--body); }
+.tile figcaption span { font-size: 14px; color: var(--night-mute); }
+.sec-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 12px 24px; margin-bottom: 28px; }
+
+/* ---------- lifestyle ---------- */
+.life { background: var(--night); padding-bottom: clamp(64px, 8vw, 120px); }
+.life-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: clamp(12px, 1.6vw, 20px); }
+.life-tile { position: relative; border-radius: 22px; overflow: hidden; max-width: 100%; border: 1px solid rgba(238, 243, 246, 0.08); }
+.life-tile img { width: 100%; height: 100%; object-fit: cover; }
+.life-a { grid-column: span 7; aspect-ratio: 16 / 10; }
+.life-b { grid-column: span 5; aspect-ratio: 4 / 5; grid-row: span 2; }
+.life-c { grid-column: span 7; aspect-ratio: 16 / 10; }
+.life-tile figcaption { position: absolute; left: 18px; bottom: 16px; font: 500 12px/1 var(--mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink); background: rgba(243, 245, 246, 0.86); padding: 8px 12px; border-radius: 999px; }
+.life-b figcaption { color: var(--brass); background: rgba(0, 4, 8, 0.72); }
+@media (max-width: 860px) { .life-a, .life-b, .life-c { grid-column: span 12; grid-row: auto; aspect-ratio: 4 / 3; } }
+
+/* ---------- the explaining, at the bottom ---------- */
+.learn { background: var(--paper); color: var(--ink); padding-block: clamp(72px, 9vw, 128px); }
+.learn-grid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: clamp(24px, 4vw, 64px); }
+@media (max-width: 860px) { .learn-grid { grid-template-columns: minmax(0, 1fr); } }
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 28px; }
+.step { display: grid; gap: 10px; align-content: start; padding-top: 18px; border-top: 1px solid var(--line); }
+.step-n { font: 500 12px/1 var(--mono); letter-spacing: 0.1em; color: var(--brass-ink); }
+.step h3 { font: 500 18px/1.35 var(--body); }
+.step p { color: var(--mute); }
+.privacy { background: var(--paper); color: var(--ink); padding-block: 0 clamp(72px, 9vw, 128px); }
+.ring-stage { position: relative; max-width: 760px; margin-inline: auto; aspect-ratio: 1400 / 1211; }
+.ring-stage img { width: 100%; height: 100%; object-fit: contain; }
+.gl .ring-stage img { visibility: hidden; }
+.ring-text { position: absolute; z-index: 2; left: 50%; top: 52.4%; transform: translate(-50%, -50%); width: 66%; text-align: center; font: 300 clamp(22px, calc(7.4vw - 2.4px), 56px)/1.05 var(--display); letter-spacing: -0.012em; }
+.ring-text em { font-style: italic; }
+.principles { margin-top: clamp(28px, 4vw, 48px); display: grid; grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr)); gap: 0 28px; }
+.principle { display: grid; gap: 6px; padding-block: 18px; border-top: 1px solid var(--line); }
+.principle h3 { font: 500 16px/1.35 var(--body); }
+.principle p { color: var(--mute); font-size: 15px; }
+.status { background: var(--night-2); color: var(--night-ink); padding-block: clamp(64px, 8vw, 112px); }
+.status-grid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: clamp(24px, 4vw, 64px); }
+@media (max-width: 860px) { .status-grid { grid-template-columns: minmax(0, 1fr); } }
+.status-copy { display: grid; gap: 14px; color: var(--night-mute); max-width: 60ch; }
+.text-link { color: var(--brass); text-decoration: none; font-weight: 500; display: inline-flex; gap: 8px; align-items: center; min-height: 44px; }
+.text-link:hover { text-decoration: underline; text-underline-offset: 4px; }
+.faq { background: var(--night-2); color: var(--night-ink); padding-block: 0 clamp(64px, 8vw, 112px); }
+.faq .acc { border-top-color: var(--night-line); }
+.faq .acc details { border-bottom-color: var(--night-line); }
+.faq .acc summary::after { color: var(--night-mute); }
+.faq .acc details p { color: var(--night-mute); }
+.reserve { background: var(--night); color: var(--night-ink); padding-block: clamp(64px, 8vw, 112px); }
+.reserve-inner { display: grid; gap: 18px; justify-items: start; max-width: 720px; }
+.reserve-inner p { color: var(--night-mute); }
+.email-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.email { font: 400 clamp(20px, 2.6vw, 30px)/1.2 var(--display); color: var(--night-ink); user-select: all; -webkit-user-select: all; overflow-wrap: anywhere; }
+.copy-status { font-size: 14px; color: var(--night-mute); min-height: 1.4em; }
+.site-foot { background: var(--night); border-top: 1px solid var(--night-line); padding-block: 48px calc(40px + env(safe-area-inset-bottom, 0px)); }
+.foot-grid { display: grid; grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: 28px; }
+@media (max-width: 860px) { .foot-grid { grid-template-columns: minmax(0, 1fr); } }
+.fine { font-size: 13px; line-height: 1.6; color: var(--night-mute); max-width: 72ch; }
+.fine-stack { display: grid; gap: 12px; }
+
+/* ---------- bag ---------- */
+.bag { margin: 0 0 0 auto; height: 100%; max-height: 100%; width: min(440px, 100%); max-width: 100%; padding: 0; border: 0; background: var(--paper); color: var(--ink); box-shadow: -20px 0 60px rgba(0, 0, 0, 0.3); }
+.bag::backdrop { background: rgba(0, 4, 8, 0.55); }
+.bag-inner { display: grid; grid-template-rows: auto 1fr auto; height: 100%; padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.bag-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 18px max(20px, env(safe-area-inset-right, 0px)) 18px 24px; border-bottom: 1px solid var(--line); }
+.bag-head h2 { font: 500 18px/1.2 var(--body); }
+.icon-btn { width: 44px; height: 44px; border-radius: 50%; border: 0; background: transparent; cursor: pointer; display: grid; place-items: center; }
+.icon-btn:hover { background: var(--tile); }
+.icon-btn svg { width: 20px; height: 20px; }
+.bag-body { overflow-y: auto; padding: 8px max(20px, env(safe-area-inset-right, 0px)) 8px 24px; }
+.bag-item { display: grid; grid-template-columns: 76px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding-block: 16px; border-bottom: 1px solid var(--line); }
+.bag-thumb { width: 76px; height: 76px; border-radius: 14px; background: var(--tile); display: grid; place-items: center; }
+.bag-thumb img { width: 86%; height: 86%; object-fit: contain; }
+.bag-name { font-weight: 500; }
+.bag-meta { font-size: 13px; color: var(--mute); }
+.bag-item select { margin-top: 6px; min-height: 36px; padding: 0 10px; border-radius: 10px; border: 1px solid var(--line); background: #fff; color: var(--ink); font: inherit; font-size: 14px; color-scheme: light; }
+.bag-empty { padding: 40px 0; color: var(--mute); }
+.bag-foot { display: grid; gap: 12px; padding: 18px max(20px, env(safe-area-inset-right, 0px)) 22px 24px; border-top: 1px solid var(--line); }
+.bag-note { font-size: 13px; color: var(--mute); }
+.bag-msg { margin: 0; padding: 14px 16px; border-radius: 14px; background: var(--tile); font: 400 14px/1.55 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; color: var(--ink); }
+.send-step { display: grid; gap: 12px; padding-block: 16px; }
+.send-step .email-inline { font-weight: 600; user-select: all; -webkit-user-select: all; overflow-wrap: anywhere; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.bag .copy-status { color: var(--mute); }
+
+/* scroll-driven reveals: content rests visible; supporting browsers animate it in */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal { animation: rise linear both; animation-timeline: view(); animation-range: entry 0% cover 24%; }
+    .zoom img { animation: settle linear both; animation-timeline: view(); animation-range: entry 0% cover 50%; }
+  }
+}
+@keyframes rise { from { opacity: 0; transform: translateY(36px); } to { opacity: 1; transform: none; } }
+@keyframes settle { from { transform: scale(1.12); } to { transform: scale(1); } }
+</style>
+</head>
+<body>
+
+<div class="announce">Concept preview. The band isn’t on sale yet. <a href="#reserve">Reserve your place</a> · <a href="../">← The research</a></div>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="logo" href="#top" aria-label="Hearing Silence, back to the top">
+      <span class="mark3d" aria-hidden="true"><span class="m3"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b></span></span>
+      <span class="wordmark">Hearing Silence</span>
+    </a>
+    <nav class="nav-links" aria-label="Sections">
+      <a href="#shop">Shop</a>
+      <a href="#system">The system</a>
+      <a href="#bands">Bands</a>
+      <a href="#how">How it works</a>
+    </nav>
+    <div class="nav-end">
+      <a class="btn btn-brass btn-sm" href="#shop">Reserve</a>
+      <button class="bag-btn" type="button" id="open-bag" aria-label="Open bag, 0 items">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8L5 8Z"></path><path d="M9 8V6.5a3 3 0 0 1 6 0V8"></path></svg>
+        <span class="bag-count" id="bag-count" data-n="0">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="film" id="top" aria-label="The Hearing Silence Band">
+  <div class="film-stage">
+    <canvas id="film" aria-hidden="true"></canvas>
+    <img class="film-poster" src="frames/f_149.webp" width="1440" height="1440" alt="Concept render of the Hearing Silence Band in Night, its light glowing">
+    <div class="hero-slot" data-anchor="hero" aria-hidden="true"><img class="slot-poster" src="frames/f_030.webp" width="1440" height="1440" alt=""></div>
+    <div class="film-copy">
+      <div class="hero-mark" id="hero-mark">
+        <span class="mark3d mark3d-lg" aria-hidden="true"><span class="m3"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b></span></span>
+        <p class="eyebrow beat" id="beat" aria-hidden="true"></p>
+      </div>
+      <h1 class="film-title">Hearing Silence Band</h1>
+      <p class="film-tag">One quiet tap. Back to now.</p>
+      <div class="film-ctas">
+        <a class="btn btn-brass" href="#shop">Shop the system</a>
+        <a class="btn btn-ghost" href="#bands">Choose a band</a>
+      </div>
+      <span class="film-bar" aria-hidden="true"><span class="film-fill"></span></span>
+    </div>
+  </div>
+</section>
+
+<div class="shop-floor">
+<section class="pdp" id="shop" aria-label="Hearing Silence System">
+  <div class="wrap pdp-grid">
+    <div class="gallery">
+      <div class="g-main" data-anchor="pdp">
+        <span class="g-tag" id="g-tag">Concept render</span>
+        <img id="g-main" src="img/p/night-34.webp" width="1100" height="1100" alt="Night band, three-quarter view">
+      </div>
+      <div class="g-thumbs" role="group" aria-label="Views">
+        <button class="g-thumb" type="button" data-angle="34" aria-pressed="true"><img src="img/p/night-34.webp" alt="" loading="lazy"><span class="sr">Three-quarter view</span></button>
+        <button class="g-thumb" type="button" data-angle="profile" aria-pressed="false"><img src="img/p/night-profile.webp" alt="" loading="lazy"><span class="sr">Profile view</span></button>
+        <button class="g-thumb" type="button" data-angle="top" aria-pressed="false"><img src="img/p/night-top.webp" alt="" loading="lazy"><span class="sr">Top view</span></button>
+        <button class="g-thumb" type="button" data-angle="rear" aria-pressed="false"><img src="img/p/night-rear.webp" alt="" loading="lazy"><span class="sr">Rear view</span></button>
+        <button class="g-thumb" type="button" data-angle="system" aria-pressed="false"><img src="img/system-thumb.webp" alt="" loading="lazy"><span class="sr">Headband and band</span></button>
+      </div>
+      <p class="gl-hint">Drag to turn. Tap the band.</p>
+    </div>
+
+    <div class="buy">
+      <div class="buy-head">
+        <p class="eyebrow">Headband + band</p>
+        <h2 class="buy-title">Hearing Silence System</h2>
+        <p class="price">Price to be announced <small>· Free to reserve</small></p>
+      </div>
+
+      <fieldset class="opt">
+        <legend class="opt-head"><b>Finish</b><span id="finish-label">Night · graphite pod, ink strap</span></legend>
+        <div class="swatches" id="swatches"></div>
+      </fieldset>
+
+      <fieldset class="opt">
+        <legend class="opt-head"><b>Size</b><span>Concept sizing</span></legend>
+        <div class="sizes">
+          <input class="radio" type="radio" name="size" id="size-s" value="S"><label class="sz" for="size-s"><b>S</b><small>140–165 mm</small></label>
+          <input class="radio" type="radio" name="size" id="size-m" value="M" checked><label class="sz" for="size-m"><b>M</b><small>160–185 mm</small></label>
+          <input class="radio" type="radio" name="size" id="size-l" value="L"><label class="sz" for="size-l"><b>L</b><small>180–205 mm</small></label>
+        </div>
+      </fieldset>
+
+      <div class="row">
+        <button class="btn btn-ink btn-wide" type="button" id="add-system">Add to bag</button>
+      </div>
+      <p class="added" id="added" role="status" aria-live="polite"></p>
+      <ul class="assure"><li>Free to reserve</li><li>No payment taken</li><li>Not shipping yet</li></ul>
+
+      <div class="acc">
+        <details><summary>In the box</summary><p>A light EEG headband and the band, in the finish you choose. Charging details will come with the final design.</p></details>
+        <details><summary>Design targets</summary><p>Under one second from the start of a loop to the tap. Zero words decoded, ever. One soft tap is the whole interface.</p></details>
+        <details><summary>Privacy</summary><p>It reads the state of your attention, never the content of a thought. Your results belong to you, not your employer, school or insurer.</p></details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="system" id="system" aria-label="The system">
+  <div class="wrap">
+    <figure class="system-media" data-anchor="system"><img src="img/system.webp" width="2000" height="1300" alt="Concept render of the system: a slim graphite headband lying open, with the Night band standing inside it" loading="lazy"></figure>
+    <div class="cap-row">
+      <div><p class="eyebrow">The system</p><h2 class="h-display">Two pieces. <em>One tap.</em></h2></div>
+      <p>The headband listens for the loop. The band lets you feel it.</p>
+    </div>
+  </div>
+</section>
+
+<section class="bands" id="bands" aria-label="Bands">
+  <div class="wrap">
+    <div class="bands-head">
+      <div><p class="eyebrow">Bands</p><h2 class="h-display">Choose your band</h2></div>
+      <div class="chips" role="group" aria-label="Filter bands">
+        <button class="chip-btn" type="button" data-filter="all" aria-pressed="true">All</button>
+        <button class="chip-btn" type="button" data-filter="dark" aria-pressed="false">Dark</button>
+        <button class="chip-btn" type="button" data-filter="light" aria-pressed="false">Light</button>
+      </div>
+    </div>
+    <ul class="grid" id="grid"></ul>
+  </div>
+</section>
+</div>
+
+<section class="details dark" aria-label="Details">
+  <div class="wrap">
+    <div class="sec-head"><div><p class="eyebrow">Details</p><h2 class="h-display">Built to be felt, <em>not read.</em></h2></div></div>
+    <div class="tiles">
+      <figure class="tile zoom reveal"><img src="img/macro-light.webp" width="1600" height="1200" alt="Close-up of the pod and its warm light" loading="lazy"><figcaption><b>Signal light</b><span>One warm point of light.</span></figcaption></figure>
+      <figure class="tile zoom reveal"><img src="img/macro-side.webp" width="1600" height="1200" alt="Low close-up of the pod's edge on the strap" loading="lazy"><figcaption><b>Haptic core</b><span>One soft tap. Never a buzz.</span></figcaption></figure>
+      <figure class="tile zoom reveal"><img src="img/macro-strap.webp" width="1600" height="1200" alt="Close-up of the soft-touch strap curving away from the pod" loading="lazy"><figcaption><b>Soft-touch strap</b><span>Made to wear through the night.</span></figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section class="life dark" aria-label="Everyday">
+  <div class="wrap life-grid">
+    <figure class="life-tile life-a zoom reveal"><img src="img/desk.webp" width="1800" height="1125" alt="The Night band standing on a light oak desk beside a notebook, a brass pen and a mug" loading="lazy"><figcaption>At your desk</figcaption></figure>
+    <figure class="life-tile life-b zoom reveal"><img src="img/moment.webp" width="1200" height="1500" alt="The band on a wrist at night, its light glowing against the skin" loading="lazy"><figcaption>2:47 AM</figcaption></figure>
+    <figure class="life-tile life-c zoom reveal"><img src="img/morning.webp" width="1800" height="1125" alt="The Night band standing on soft white linen in morning light" loading="lazy"><figcaption>First thing</figcaption></figure>
+  </div>
+</section>
+
+<section class="learn" id="how" aria-label="How it works">
+  <div class="wrap learn-grid">
+    <div><p class="eyebrow">How it works</p><h2 class="h-display">Notice the loop. <em>Step out.</em></h2></div>
+    <ol class="steps">
+      <li class="step reveal"><span class="step-n">01</span><h3>The headband listens for a state</h3><p>It looks for the signature of repetitive, self-focused thinking. It reads the state of your attention, never the words.</p></li>
+      <li class="step reveal"><span class="step-n">02</span><h3>The band taps your wrist</h3><p>Designed to tap within a second of a loop starting. There’s nothing to read and nothing to answer.</p></li>
+      <li class="step reveal"><span class="step-n">03</span><h3>You come back</h3><p>You notice the thought as a thought and return to what you were doing. With practice, the noticing is meant to become yours.</p></li>
+    </ol>
+  </div>
+</section>
+
+<section class="privacy" aria-label="Privacy">
+  <div class="wrap">
+    <div class="ring-stage" data-anchor="ring" data-seg="2" data-cy="0.524">
+      <img src="img/ring.webp" width="1400" height="1211" alt="Concept render of the band in Brass, standing upright and seen front-on as a ring" loading="lazy">
+      <h2 class="ring-text" id="ring-text">Your thoughts<br><em>stay yours.</em></h2>
+    </div>
+    <ul class="principles">
+      <li class="principle"><h3>No content, ever</h3><p>The design rules out decoding words.</p></li>
+      <li class="principle"><h3>Your results are yours</h3><p>Not your employer’s, your school’s or your insurer’s.</p></li>
+      <li class="principle"><h3>Designed to become unnecessary</h3><p>The goal is a mind that catches the loop on its own.</p></li>
+    </ul>
+  </div>
+</section>
+
+<section class="status dark" id="research" aria-label="Where it stands">
+  <div class="wrap status-grid">
+    <div><p class="eyebrow">Where it stands</p><h2 class="h-display">A concept, built in the open.</h2></div>
+    <div class="status-copy">
+      <p>Hearing Silence is an independent research program. No data has been collected yet. The first phase reanalyses public EEG datasets before anyone wears a thing.</p>
+      <p>Every trial will include a sham control. A result that can’t beat sham gets published as a null.</p>
+      <a class="text-link" href="https://aagatadhikari.github.io/hearing-silence/">Read the research <span aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</section>
+
+<section class="faq dark" aria-label="Questions">
+  <div class="wrap status-grid">
+    <div><p class="eyebrow">Questions</p></div>
+    <div class="acc">
+      <details><summary>Is it for sale?</summary><p>Not yet. The band is a concept from an independent research program. Reserving puts you on the list, and nothing is charged.</p></details>
+      <details><summary>Does it read my thoughts?</summary><p>No. It detects a state, whether you’re absorbed in a repetitive loop, never the words. The design rules out decoding content.</p></details>
+      <details><summary>Does it work yet?</summary><p>Not yet. No data has been collected. The first phase reanalyses public EEG datasets, and every trial will be sham-controlled.</p></details>
+      <details><summary>Do I need the headband?</summary><p>Yes. The headband detects the loop. The band is how you feel it.</p></details>
+      <details><summary>Is it a medical device?</summary><p>Not today. It hasn’t been tested, cleared or approved to diagnose, treat or prevent any condition.</p></details>
+    </div>
+  </div>
+</section>
+
+<section class="reserve dark" id="reserve" aria-label="Reserve your place">
+  <div class="wrap reserve-inner">
+    <p class="eyebrow" style="color: var(--brass)">Reserve your place</p>
+    <h2 class="h-display">Hear it first.</h2>
+    <p>Reserving is free. Email the address below, or build a bag and copy the message it writes for you.</p>
+    <div class="email-row">
+      <span class="email" id="email">adhikariaagat@gmail.com</span>
+      <button class="btn btn-ghost btn-sm" type="button" id="copy-email">Copy email</button>
+    </div>
+    <p class="copy-status" id="copy-status" role="status" aria-live="polite"></p>
+  </div>
+</section>
+
+</main>
+
+<footer class="site-foot">
+  <div class="wrap foot-grid">
+    <a class="logo" href="#top" aria-label="Hearing Silence, back to the top">
+      <span class="mark3d" aria-hidden="true"><span class="m3"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><b></b></span></span>
+      <span class="wordmark">Hearing Silence</span>
+    </a>
+    <div class="fine-stack">
+      <p class="fine">The Hearing Silence Band is a concept from an independent research program. It is not for sale and has not been tested, cleared or approved to diagnose, treat or prevent any condition. Prices are not set. Product images and the 3D model are renders.</p>
+      <p class="fine">If you’re struggling right now, you don’t need to wait for a device. In the US, call or text 988 to reach the Suicide &amp; Crisis Lifeline. Elsewhere, contact your local emergency number.</p>
+      <p class="fine">© 2026 Aagat Adhikari</p>
+    </div>
+  </div>
+</footer>
+
+<dialog class="bag" id="bag" aria-labelledby="bag-title">
+  <div class="bag-inner">
+    <div class="bag-head">
+      <h2 id="bag-title">Your bag</h2>
+      <button class="icon-btn" type="button" id="close-bag" aria-label="Close bag"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+    </div>
+    <div class="bag-body">
+      <div id="bag-list"></div>
+      <p class="bag-empty" id="bag-empty">Your bag is empty. Pick a finish to start.</p>
+      <div class="send-step" id="send-step" hidden>
+        <p>Send this message to reserve. Nothing is charged.</p>
+        <pre class="bag-msg" id="bag-msg"></pre>
+        <div class="row"><button class="btn btn-ink btn-sm" type="button" id="copy-msg">Copy message</button></div>
+        <p>Send it to <span class="email-inline">adhikariaagat@gmail.com</span></p>
+        <div class="row"><button class="btn btn-line btn-sm" type="button" id="copy-mail">Copy email</button></div>
+        <p class="copy-status" id="bag-status" role="status" aria-live="polite"></p>
+      </div>
+    </div>
+    <div class="bag-foot">
+      <p class="bag-note">Reserving is free. Nothing is charged, and the band isn’t shipping yet.</p>
+      <button class="btn btn-ink btn-wide" type="button" id="reserve-bag">Reserve these</button>
+      <button class="link-btn" type="button" id="back-bag" hidden>Back to bag</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+(() => {
+  const root = document.documentElement;
+  const RM = root.classList.contains('rm');
+  const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+  const clamp01 = (x) => clamp(x, 0, 1);
+  const sm = (a, b, x) => { const t = clamp01((x - a) / (b - a)); return t * t * (3 - 2 * t); };
+  const pad = (i) => String(i).padStart(3, '0');
+  const THREE_URL = new URL('vendor/three.module.min.js', document.baseURI).href;
+
+  const FINISHES = [
+    { id: 'night', name: 'Night', desc: 'graphite pod, ink strap', strap: '#1d262c', pod: '#4a545b', tone: 'dark' },
+    { id: 'mist', name: 'Mist', desc: 'silver pod, frost strap', strap: '#dbe4ea', pod: '#b9c2c7', tone: 'light' },
+    { id: 'brass', name: 'Brass', desc: 'brass pod, sand strap', strap: '#d8ccb6', pod: '#c69440', tone: 'light' },
+    { id: 'sage', name: 'Sage', desc: 'silver pod, sage strap', strap: '#6f7f73', pod: '#c4cbcf', tone: 'dark' },
+    { id: 'dusk', name: 'Dusk', desc: 'graphite pod, dusk strap', strap: '#323f55', pod: '#4a545b', tone: 'dark' },
+    { id: 'stone', name: 'Stone', desc: 'brass pod, stone strap', strap: '#a8a39b', pod: '#c69440', tone: 'light' },
+  ];
+  const byId = Object.fromEntries(FINISHES.map((f) => [f.id, f]));
+  const img = (f, a) => (a === 'system' ? 'img/system-thumb.webp' : 'img/p/' + f + '-' + a + '.webp');
+  const ANGLE_NAME = { '34': 'three-quarter view', profile: 'profile view', top: 'top view', rear: 'rear view', system: 'with the headband' };
+  let gl = null; // the live 3D view, once it starts
+
+  /* ---------- hero: shared progress, beat line and progress bar ---------- */
+  const film = document.querySelector('.film');
+  const stage = film.querySelector('.film-stage');
+  const fill = document.querySelector('.film-fill');
+  const beat = document.getElementById('beat');
+  let stickTop = 0;
+  const measureStick = () => { stickTop = parseFloat(getComputedStyle(stage).top) || 0; };
+  measureStick();
+  addEventListener('resize', measureStick);
+  function heroProgress() {
+    const r = film.getBoundingClientRect();
+    const total = film.offsetHeight - stage.offsetHeight;
+    return total > 0 ? clamp01((stickTop - r.top) / total) : 0;
+  }
+  const heroMark = document.getElementById('hero-mark');
+  const BEATS = [[0, ''], [0.14, '01 · It listens'], [0.42, '02 · It taps'], [0.7, '03 · You step out']];
+  let beatIdx = 0;
+  function heroUI(p) {
+    let i = 0;
+    for (let k = 0; k < BEATS.length; k++) if (p >= BEATS[k][0]) i = k;
+    if (i !== beatIdx) {
+      beatIdx = i;
+      heroMark.classList.toggle('beats', i > 0);
+      beat.classList.remove('swap');
+      if (i > 0) { beat.textContent = BEATS[i][1]; void beat.offsetWidth; beat.classList.add('swap'); }
+    }
+    if (fill) fill.style.transform = 'scaleX(' + p.toFixed(4) + ')';
+  }
+
+  /* ---------- the pre-rendered film: shows the band at once, and stands in whenever live 3D can't run ---------- */
+  const slotEl = document.querySelector('.hero-slot');
+  function setupFrames() {
+    const canvas = document.getElementById('film');
+    const ctx = canvas.getContext('2d', { alpha: false });
+    const N = 150, FS = 1440, BG = '#000408', START = 30, INTRO_TO = 80, INTRO_DUR = 1.8;
+    // per frame: light x, y in frame pixels, light level 0..1
+    const LIGHT = [[741.3,540.4,0],[741.3,540.3,0],[741.6,539.9,0],[742,539.2,0],[742.5,538.3,0],[743.1,537.2,0],[743.8,535.9,0],[744.6,534.5,0],[745.5,532.9,0],[746.4,531.2,0],[747.4,529.3,0],[748.5,527.4,0],[749.5,525.5,0],[750.6,523.5,0],[751.7,521.5,0],[752.7,519.5,0],[753.7,517.6,0],[754.7,515.8,0],[755.6,514.1,0],[756.3,512.5,0],[757,511.2,0],[757.6,510.1,0],[758,509.3,0],[758.2,508.9,0],[758.3,508.7,0],[758.5,508.6,0],[758.9,508.2,0],[759.5,507.7,0],[760.3,507,0],[761.3,506.1,0],[762.4,505,0],[763.7,503.8,0],[765.1,502.4,0],[766.5,501,0],[768.1,499.4,0],[769.7,497.7,0],[771.3,495.9,0],[772.9,494.1,0],[774.5,492.2,0],[776,490.2,0],[777.5,488.2,0],[778.8,486.2,0],[780.1,484.1,0],[781.2,482.1,0],[782.2,480,0],[783.1,478,0],[783.8,476,0],[784.3,474,0],[784.8,472.1,0],[785.1,470.3,0],[785.2,468.5,0],[785.3,466.9,0],[785.3,465.4,0],[785.2,463.9,0],[785.1,462.7,0],[784.9,461.6,0],[784.8,460.7,0],[784.6,460,0],[784.5,459.5,0],[784.4,459.2,0],[784.4,459.1,0],[784.4,459.1,0],[784.4,458.9,0],[784.4,458.8,0],[784.4,458.6,0],[784.3,458.3,0],[784.3,458.1,0.007],[784.2,457.9,0.069],[784.2,457.7,0.183],[784.1,457.6,0.33],[784,457.4,0.495],[783.9,457.3,0.66],[783.9,457.2,0.809],[783.8,457.2,0.925],[783.8,457.2,0.991],[783.8,457.2,1],[783.9,457.3,1],[784.2,457.6,1],[784.5,458.2,1],[784.8,459,1],[785.3,460.1,1],[785.8,461.6,1],[786.3,463.6,1],[786.9,466,1],[787.5,468.8,1],[788.1,471.9,1],[788.6,475.3,1],[789.2,478.7,1],[789.6,482.1,1],[790.1,485.3,1],[790.4,487.9,1],[790.6,489.8,1],[790.8,490.7,1],[790.8,491.1,1],[790.9,492.5,1],[791.1,495.1,1],[791.4,498.8,1],[791.8,503.5,1],[792.2,509.2,1],[792.7,515.8,1],[793.2,523.2,1],[793.7,531.3,1],[794.2,539.8,1],[794.8,548.7,1],[795.3,557.5,1],[795.8,566,1],[796.2,573.9,1],[796.6,580.9,1],[796.9,586.4,1],[797.1,590.3,1],[797.2,592.1,1],[797.1,591.4,1],[796.8,588.2,1],[796.2,582.8,1],[795.5,575.7,1],[794.7,567.3,1],[793.7,558.1,1],[792.6,548.4,1],[791.5,538.7,1],[790.4,529.2,1],[789.3,520.2,1],[788.1,512,1],[787.1,504.6,1],[786.1,498.2,1],[785.1,492.7,1],[784.3,488.2,1],[783.5,484.5,1],[782.9,481.7,1],[782.3,479.6,1],[782,478.1,1],[781.7,477.3,1],[781.6,476.9,1],[781.6,476.9,1],[781.5,476.7,1],[781.3,476.4,1],[781.1,476,1],[780.9,475.6,1],[780.6,475.2,1],[780.3,474.8,1],[780,474.4,1],[779.7,474.1,1],[779.4,473.8,1],[779.1,473.6,1],[778.8,473.5,1],[778.5,473.4,1],[778.3,473.4,1],[778.1,473.4,1],[778,473.4,1],[777.9,473.4,1],[777.8,473.4,1]];
+    const frames = new Array(N), ready = new Uint8Array(N);
+    // hold: frame 30 (light off) while live 3D starts · play: the intro (light comes on), then scroll · still: last frame · off: live 3D has the hero
+    let mode = RM ? 'still' : 'hold';
+    let cur = RM ? N - 1 : START, need = true, geo = null, raf = 0, drawn = false;
+    let introT0 = null, introEnded = false, skipIntro = false, playT = 0;
+    function load(i) {
+      if (frames[i]) return;
+      const im = new Image(); im.decoding = 'async';
+      im.onload = () => { ready[i] = 1; if (mode !== 'off' && ((mode === 'play' && introT0 === null) || Math.abs(i - cur) <= 6)) { need = true; schedule(); } };
+      im.src = 'frames/f_' + pad(i) + '.webp'; frames[i] = im;
+    }
+    load(cur);
+    function nearest(i) { if (ready[i]) return i; for (let d = 1; d < N; d++) { if (i - d >= 0 && ready[i - d]) return i - d; if (i + d < N && ready[i + d]) return i + d; } return -1; }
+    function size() {
+      const r = canvas.getBoundingClientRect();
+      const dpr = Math.min(2, window.devicePixelRatio || 1);
+      canvas.width = Math.max(1, Math.round(r.width * dpr)); canvas.height = Math.max(1, Math.round(r.height * dpr));
+      const W = canvas.width, H = canvas.height;
+      const sr = slotEl.getBoundingClientRect();
+      let s, cx, cy;
+      if (!RM && sr.height > 40) {
+        // same size and place as the live band, so the hand-over is seamless
+        s = Math.min(sr.width, sr.height) * dpr * (((window.innerWidth <= 920 ? 0.8 : 0.72) * 0.86) / 0.38);
+        cx = (sr.left - r.left + sr.width / 2) * dpr; cy = (sr.top - r.top + sr.height / 2) * dpr;
+      } else { s = Math.min(W, H); cx = W / 2; cy = H / 2; }
+      geo = { W, H, s, x: cx - s / 2, y: cy - s / 2 };
+      need = true;
+    }
+    function fade(x0, y0, w, h, fx0, fy0, fx1, fy1) { const g = ctx.createLinearGradient(fx0, fy0, fx1, fy1); g.addColorStop(0, 'rgba(0,4,8,1)'); g.addColorStop(1, 'rgba(0,4,8,0)'); ctx.fillStyle = g; ctx.fillRect(x0, y0, w, h); }
+    function draw() {
+      if (!geo) return;
+      const { W, H, s, x, y } = geo;
+      ctx.fillStyle = BG; ctx.fillRect(0, 0, W, H);
+      const k = nearest(cur); if (k < 0) return;
+      ctx.drawImage(frames[k], x, y, s, s);
+      if (!drawn) { drawn = true; root.classList.add('hero-live'); }
+      const f = s * 0.05;
+      if (x > 0) fade(x, y, f, s, x, 0, x + f, 0);
+      if (x + s < W) fade(x + s - f, y, f, s, x + s, 0, x + s - f, 0);
+      if (y > 0) fade(x, y, s, f, 0, y, 0, y + f);
+      if (y + s < H) fade(x, y + s - f, s, f, 0, y + s, 0, y + s - f);
+      const L = LIGHT[k];
+      if (L && L[2] > 0.01) {
+        const gx = x + (L[0] / FS) * s, gy = y + (L[1] / FS) * s, rr = s * 0.12;
+        const g = ctx.createRadialGradient(gx, gy, 0, gx, gy, rr);
+        g.addColorStop(0, 'rgba(255,196,120,' + (0.55 * L[2]).toFixed(3) + ')');
+        g.addColorStop(0.3, 'rgba(232,166,75,' + (0.2 * L[2]).toFixed(3) + ')');
+        g.addColorStop(1, 'rgba(232,166,75,0)');
+        ctx.globalCompositeOperation = 'screen'; ctx.fillStyle = g; ctx.fillRect(gx - rr, gy - rr, 2 * rr, 2 * rr); ctx.globalCompositeOperation = 'source-over';
+      }
+    }
+    function tick() {
+      raf = 0;
+      if (mode === 'off') return;
+      if (mode !== 'still') {
+        const p = heroProgress();
+        if (mode === 'play') {
+          const now = performance.now();
+          let idx;
+          if (skipIntro) idx = Math.round(INTRO_TO + p * (N - 1 - INTRO_TO));
+          else {
+            if (introT0 === null) {
+              let all = true;
+              for (let i = START; i <= INTRO_TO; i++) if (!ready[i]) { all = false; break; }
+              if (all || now - playT > 2500) introT0 = now + 300;
+            }
+            const it = introT0 === null ? 0 : (now - introT0) / 1000 / INTRO_DUR;
+            if (it < 1) {
+              const u = clamp01(it);
+              idx = Math.round(START + (INTRO_TO - START) * u * u * (3 - 2 * u));
+              schedule();
+            } else {
+              if (!introEnded) { introEnded = true; kickMarks(180); }
+              idx = Math.round(INTRO_TO + p * (N - 1 - INTRO_TO));
+            }
+          }
+          if (idx !== cur) { cur = idx; need = true; }
+        }
+        heroUI(p);
+      }
+      if (need) { draw(); need = false; }
+    }
+    function schedule() { if (!raf && mode !== 'off') raf = requestAnimationFrame(tick); }
+    addEventListener('scroll', schedule, { passive: true });
+    addEventListener('resize', () => { size(); schedule(); });
+    size(); schedule();
+    return {
+      // play the film: the light-on intro (unless skipped), then scroll scrubs it
+      play(skip) {
+        if (mode === 'play' || mode === 'still') return;
+        document.documentElement.classList.add('film-on');
+        mode = 'play'; skipIntro = !!skip; playT = performance.now();
+        for (let i = START; i <= INTRO_TO; i++) load(i);
+        load(N - 1);
+        for (const st of [15, 5, 1]) for (let i = INTRO_TO; i < N; i += st) load(i);
+        size(); schedule(); setTimeout(schedule, 2600);
+      },
+      stop() { mode = 'off'; },
+    };
+  }
+
+  /* ---------- product page ---------- */
+  const state = { finish: 'night', angle: '34' };
+  const gMainBox = document.querySelector('.g-main');
+  const main = document.getElementById('g-main');
+  const thumbs = [...document.querySelectorAll('.g-thumb')];
+  const swatches = document.getElementById('swatches');
+  const finishLabel = document.getElementById('finish-label');
+  FINISHES.forEach((f, i) => {
+    const input = document.createElement('input');
+    input.type = 'radio'; input.name = 'finish'; input.id = 'finish-' + f.id; input.value = f.id; input.className = 'radio';
+    if (i === 0) input.checked = true;
+    const label = document.createElement('label');
+    label.className = 'sw'; label.htmlFor = input.id; label.title = f.name;
+    const dot = document.createElement('span');
+    dot.style.background = 'linear-gradient(135deg, ' + f.strap + ' 50%, ' + f.pod + ' 50%)';
+    const sr = document.createElement('span'); sr.className = 'sr'; sr.textContent = f.name + ', ' + f.desc;
+    label.append(dot, sr);
+    swatches.append(input, label);
+    input.addEventListener('change', () => setFinish(f.id));
+  });
+  function showMain() {
+    const src = img(state.finish, state.angle);
+    if (main.getAttribute('src') !== src) {
+      main.classList.add('is-loading');
+      const pre = new Image();
+      pre.onload = () => { main.src = src; main.classList.remove('is-loading'); };
+      pre.onerror = () => main.classList.remove('is-loading');
+      pre.src = src;
+    }
+    main.alt = byId[state.finish].name + ' band, ' + ANGLE_NAME[state.angle];
+    if (gl) gMainBox.setAttribute('aria-label', '3D view of the ' + byId[state.finish].name + ' band. Drag to turn it.');
+  }
+  function setFinish(id) {
+    state.finish = id;
+    const f = byId[id];
+    finishLabel.textContent = f.name + ' · ' + f.desc;
+    thumbs.forEach((t) => { const a = t.dataset.angle; if (a !== 'system') t.querySelector('img').src = img(id, a); });
+    showMain();
+    if (gl) gl.finish(id);
+  }
+  thumbs.forEach((t) => t.addEventListener('click', () => {
+    state.angle = t.dataset.angle;
+    thumbs.forEach((u) => u.setAttribute('aria-pressed', String(u === t)));
+    showMain();
+    if (gl) gl.angle(state.angle);
+  }));
+  const sizeOf = () => (document.querySelector('input[name="size"]:checked') || {}).value || 'M';
+
+  /* ---------- bands grid ---------- */
+  const grid = document.getElementById('grid');
+  FINISHES.forEach((f) => {
+    const li = document.createElement('li'); li.className = 'card reveal'; li.dataset.tone = f.tone;
+    const media = document.createElement('button'); media.type = 'button'; media.className = 'card-media';
+    media.setAttribute('aria-label', 'See ' + f.name + ' on the product page');
+    const im = document.createElement('img'); im.src = img(f.id, '34'); im.alt = f.name + ' band: ' + f.desc; im.loading = 'lazy'; im.width = 1100; im.height = 1100;
+    media.append(im);
+    media.addEventListener('click', () => {
+      document.getElementById('finish-' + f.id).checked = true; setFinish(f.id);
+      document.getElementById('shop').scrollIntoView({ behavior: RM ? 'auto' : 'smooth' });
+    });
+    const row = document.createElement('div'); row.className = 'card-row';
+    const h = document.createElement('h3'); h.textContent = f.name;
+    const pr = document.createElement('span'); pr.className = 'price'; pr.textContent = 'Price TBA';
+    row.append(h, pr);
+    const d = document.createElement('p'); d.className = 'card-desc'; d.textContent = f.desc.charAt(0).toUpperCase() + f.desc.slice(1);
+    const acts = document.createElement('div'); acts.className = 'card-actions';
+    const add = document.createElement('button'); add.type = 'button'; add.className = 'btn btn-line btn-sm'; add.textContent = 'Add band';
+    add.addEventListener('click', () => { addItem({ kind: 'band', finish: f.id, size: sizeOf() }); add.textContent = 'Added'; setTimeout(() => { add.textContent = 'Add band'; }, 1600); });
+    acts.append(add);
+    li.append(media, row, d, acts);
+    grid.append(li);
+  });
+  const chips = [...document.querySelectorAll('.chip-btn')];
+  chips.forEach((c) => c.addEventListener('click', () => {
+    chips.forEach((x) => x.setAttribute('aria-pressed', String(x === c)));
+    const want = c.dataset.filter;
+    [...grid.children].forEach((li) => { li.hidden = !(want === 'all' || li.dataset.tone === want); });
+  }));
+  // cards lean toward the pointer
+  if (!RM && matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    grid.addEventListener('pointermove', (e) => {
+      const m = e.target.closest('.card-media'); if (!m) return;
+      const r = m.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5, y = (e.clientY - r.top) / r.height - 0.5;
+      m.style.setProperty('--ry', (x * 12).toFixed(2) + 'deg');
+      m.style.setProperty('--rx', (-y * 12).toFixed(2) + 'deg');
+    });
+    grid.addEventListener('pointerout', (e) => {
+      const m = e.target.closest('.card-media');
+      if (m && !m.contains(e.relatedTarget)) { m.style.setProperty('--rx', '0deg'); m.style.setProperty('--ry', '0deg'); }
+    });
+  }
+
+  /* ---------- bag ---------- */
+  const KEY = 'hs-bag-v1';
+  let bag = [];
+  try { bag = JSON.parse(localStorage.getItem(KEY) || '[]').filter((x) => x && byId[x.finish]); } catch (e) { bag = []; }
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(bag)); } catch (e) { /* storage unavailable: the bag lasts for this visit */ } };
+  const dlg = document.getElementById('bag');
+  const list = document.getElementById('bag-list');
+  const empty = document.getElementById('bag-empty');
+  const countEl = document.getElementById('bag-count');
+  const openBtn = document.getElementById('open-bag');
+  const sendStep = document.getElementById('send-step');
+  const reserveBtn = document.getElementById('reserve-bag');
+  const backBtn = document.getElementById('back-bag');
+  const msgEl = document.getElementById('bag-msg');
+  const itemName = (it) => (it.kind === 'system' ? 'Hearing Silence System' : 'Extra band');
+  function render() {
+    countEl.textContent = String(bag.length); countEl.dataset.n = String(bag.length);
+    openBtn.setAttribute('aria-label', 'Open bag, ' + bag.length + (bag.length === 1 ? ' item' : ' items'));
+    list.replaceChildren();
+    bag.forEach((it, i) => {
+      const f = byId[it.finish];
+      const row = document.createElement('div'); row.className = 'bag-item';
+      const th = document.createElement('div'); th.className = 'bag-thumb';
+      const ti = document.createElement('img'); ti.src = it.kind === 'system' ? 'img/system-thumb.webp' : img(it.finish, '34'); ti.alt = '';
+      th.append(ti);
+      const info = document.createElement('div');
+      const n = document.createElement('div'); n.className = 'bag-name'; n.textContent = itemName(it);
+      const m = document.createElement('div'); m.className = 'bag-meta'; m.textContent = f.name + ' · Price TBA';
+      const lab = document.createElement('label'); lab.className = 'sr'; lab.htmlFor = 'bag-size-' + i; lab.textContent = 'Size for ' + itemName(it);
+      const sel = document.createElement('select'); sel.id = 'bag-size-' + i;
+      ['S', 'M', 'L'].forEach((s) => { const o = document.createElement('option'); o.value = s; o.textContent = 'Size ' + s; if (s === it.size) o.selected = true; sel.append(o); });
+      sel.addEventListener('change', () => { it.size = sel.value; save(); writeMsg(); });
+      info.append(n, m, lab, sel);
+      const rm = document.createElement('button'); rm.type = 'button'; rm.className = 'link-btn'; rm.textContent = 'Remove';
+      rm.setAttribute('aria-label', 'Remove ' + itemName(it) + ', ' + f.name);
+      rm.addEventListener('click', () => { bag.splice(i, 1); save(); render(); });
+      row.append(th, info, rm);
+      list.append(row);
+    });
+    empty.hidden = bag.length > 0;
+    reserveBtn.disabled = bag.length === 0;
+    if (!bag.length) showSend(false);
+    writeMsg();
+  }
+  function writeMsg() {
+    const lines = bag.map((it) => '- ' + itemName(it) + ', ' + byId[it.finish].name + ', size ' + it.size);
+    msgEl.textContent = 'Hi Aagat,\n\nI’d like to reserve:\n' + lines.join('\n') + '\n\nPlease add me to the list.';
+  }
+  function showSend(on) {
+    sendStep.hidden = !on; list.hidden = on; empty.hidden = on || bag.length > 0;
+    reserveBtn.hidden = on; backBtn.hidden = !on;
+  }
+  function addItem(it) { bag.push(it); save(); render(); }
+  function openBag() { showSend(false); render(); if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); }
+  openBtn.addEventListener('click', openBag);
+  document.getElementById('close-bag').addEventListener('click', () => dlg.close());
+  dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  reserveBtn.addEventListener('click', () => showSend(true));
+  backBtn.addEventListener('click', () => showSend(false));
+  const added = document.getElementById('added');
+  document.getElementById('add-system').addEventListener('click', () => {
+    addItem({ kind: 'system', finish: state.finish, size: sizeOf() });
+    added.textContent = 'Added: ' + byId[state.finish].name + ', size ' + sizeOf() + '. ';
+    const v = document.createElement('button'); v.type = 'button'; v.className = 'link-btn'; v.textContent = 'View bag';
+    v.addEventListener('click', openBag); added.append(v);
+    if (gl) gl.pulse(false);
+  });
+
+  /* ---------- copy helpers ---------- */
+  function copy(text, node, status) {
+    const selectIt = () => {
+      const range = document.createRange(); range.selectNodeContents(node);
+      const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+      status.textContent = 'Selected. Press Ctrl+C or ⌘C to copy.';
+    };
+    try { navigator.clipboard.writeText(text).then(() => { status.textContent = 'Copied.'; }, selectIt); } catch (e) { selectIt(); }
+  }
+  const mailNode = document.getElementById('email');
+  document.getElementById('copy-email').addEventListener('click', () => copy(mailNode.textContent.trim(), mailNode, document.getElementById('copy-status')));
+  const bagStatus = document.getElementById('bag-status');
+  document.getElementById('copy-msg').addEventListener('click', () => copy(msgEl.textContent, msgEl, bagStatus));
+  const inlineMail = document.querySelector('.email-inline');
+  document.getElementById('copy-mail').addEventListener('click', () => copy(inlineMail.textContent.trim(), inlineMail, bagStatus));
+  render();
+
+  /* ---------- the emblem turns in 3D as you scroll, then settles flat ---------- */
+  let kickMarks = () => {};
+  if (!RM) {
+    const marks = [...document.querySelectorAll('.m3')];
+    let spin = 0, vel = 0, target = 0, lastY = scrollY, lastScroll = -1e9, raf2 = 0;
+    const step = () => {
+      raf2 = 0;
+      const idle = performance.now() - lastScroll > 160;
+      if (idle) target = Math.round(target / 180) * 180;
+      vel += (90 * (target - spin) - 13 * vel) / 60;
+      spin += vel / 60;
+      const tilt = clamp(-vel * 0.05, -20, 20);
+      for (const m of marks) { m.style.setProperty('--m-spin', spin.toFixed(2) + 'deg'); m.style.setProperty('--m-tilt', tilt.toFixed(2) + 'deg'); }
+      if (!idle || Math.abs(target - spin) > 0.05 || Math.abs(vel) > 0.05) raf2 = requestAnimationFrame(step);
+    };
+    addEventListener('scroll', () => {
+      const dy = scrollY - lastY; lastY = scrollY;
+      target += clamp(dy * 0.22, -40, 40);
+      lastScroll = performance.now();
+      if (!raf2) raf2 = requestAnimationFrame(step);
+    }, { passive: true });
+    // one half-turn, used when the band's light comes on
+    kickMarks = (deg) => { target += deg; if (!raf2) raf2 = requestAnimationFrame(step); };
+  }
+
+  /* ---------- the live 3D band ---------- */
+  function start3D(THREE, hooks) {
+    const canvas = document.createElement('canvas');
+    canvas.className = 'gl-canvas';
+    canvas.setAttribute('aria-hidden', 'true');
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+    renderer.setClearColor(0x000000, 0);
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.NeutralToneMapping;
+    const D2R = Math.PI / 180;
+    const C = (h) => new THREE.Color(h);
+    const lerp = (a, b, t) => a + (b - a) * t;
+    const ease = (t) => t * t * (3 - 2 * t);
+    const scene = new THREE.Scene();
+    let takenOver = false; // true once the live band has drawn and replaced the film
+
+    // a soft studio for reflections
+    {
+      const env = new THREE.Scene();
+      env.add(new THREE.Mesh(new THREE.BoxGeometry(12, 12, 12), new THREE.MeshBasicMaterial({ color: new THREE.Color(0.3, 0.32, 0.34), side: THREE.BackSide })));
+      const panel = (w, h, p, inten, col) => {
+        const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: C(col).multiplyScalar(inten), side: THREE.DoubleSide }));
+        m.position.set(p[0], p[1], p[2]); m.lookAt(0, 0, 0); env.add(m);
+      };
+      panel(7, 3, [0, 5.8, 0.4], 9, '#ffffff');
+      panel(3, 6, [-5.8, 1.2, 1.6], 5, '#fff3e3');
+      panel(1.6, 6, [5.8, 0.8, -2.4], 4, '#dce8f3');
+      panel(6, 1.4, [0, -1.6, 5.8], 1.6, '#ffffff');
+      const pm = new THREE.PMREMGenerator(renderer);
+      scene.environment = pm.fromScene(env, 0.04).texture;
+      pm.dispose();
+    }
+
+    // ---- geometry: the same band as the renders ----
+    const spow = (x, e) => Math.sign(x) * Math.abs(x) ** e;
+    const BAND = { a: 31.5, b: 24.5, p: 2.35, width: 20, thick: 3.2, r: 1.45 };
+    const POD = { A: 15.5, B: 3.5, C: 11.2, e1: 0.42, e2: 0.4, lift: 0.7 };
+    function loopPoints(a, b, p, N) {
+      const M = 4096, raw = [], cum = [0];
+      for (let i = 0; i <= M; i++) {
+        const t = (i / M) * Math.PI * 2;
+        raw.push([a * spow(Math.cos(t), 2 / p), b * spow(Math.sin(t), 2 / p)]);
+        if (i) cum.push(cum[i - 1] + Math.hypot(raw[i][0] - raw[i - 1][0], raw[i][1] - raw[i - 1][1]));
+      }
+      const L = cum[M], out = [];
+      let k = 0;
+      for (let i = 0; i < N; i++) {
+        const target = (i / N) * L;
+        while (cum[k + 1] < target) k++;
+        const f = (target - cum[k]) / (cum[k + 1] - cum[k]);
+        out.push([raw[k][0] + f * (raw[k + 1][0] - raw[k][0]), raw[k][1] + f * (raw[k + 1][1] - raw[k][1])]);
+      }
+      return out;
+    }
+    function profile(h, w, r, seg) {
+      const pts = [];
+      const cs = [[h - r, w / 2 - r, 0], [-(h - r), w / 2 - r, Math.PI / 2], [-(h - r), -(w / 2 - r), Math.PI], [h - r, -(w / 2 - r), 1.5 * Math.PI]];
+      for (const [cn, cz, a0] of cs) for (let i = 0; i <= seg; i++) { const a = a0 + (i / seg) * (Math.PI / 2); pts.push([cn + r * Math.cos(a), cz + r * Math.sin(a)]); }
+      return pts;
+    }
+    function indexed(pos, idx) {
+      const g = new THREE.BufferGeometry();
+      g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+      g.setIndex(idx); g.computeVertexNormals();
+      return g;
+    }
+    function strapGeometry(N = 320, seg = 8) {
+      const pts = loopPoints(BAND.a, BAND.b, BAND.p, N), prof = profile(BAND.thick / 2, BAND.width, BAND.r, seg), M = prof.length;
+      const pos = [], idx = [];
+      for (let i = 0; i < N; i++) {
+        const p0 = pts[(i - 1 + N) % N], p1 = pts[(i + 1) % N];
+        let tx = p1[0] - p0[0], ty = p1[1] - p0[1];
+        const tl = Math.hypot(tx, ty); tx /= tl; ty /= tl;
+        for (const [n, z] of prof) pos.push(pts[i][0] + ty * n, pts[i][1] - tx * n, z);
+      }
+      for (let i = 0; i < N; i++) for (let j = 0; j < M; j++) {
+        const a = i * M + j, b = ((i + 1) % N) * M + j, c = ((i + 1) % N) * M + ((j + 1) % M), d = i * M + ((j + 1) % M);
+        idx.push(a, b, d, b, c, d);
+      }
+      return indexed(pos, idx);
+    }
+    const strapTopY = (x) => BAND.b * Math.max(0, 1 - Math.abs(x / BAND.a) ** BAND.p) ** (1 / BAND.p);
+    function podGeometry(U = 128, V = 64) {
+      const pos = [], idx = [];
+      for (let vi = 0; vi <= V; vi++) {
+        const v = -Math.PI / 2 + (vi / V) * Math.PI, cv = Math.cos(v), sv = Math.sin(v);
+        for (let ui = 0; ui < U; ui++) {
+          const u = -Math.PI + (ui / U) * 2 * Math.PI;
+          const x = POD.A * spow(cv, POD.e1) * spow(Math.cos(u), POD.e2);
+          const y = POD.B * spow(sv, POD.e1);
+          const z = POD.C * spow(cv, POD.e1) * spow(Math.sin(u), POD.e2);
+          pos.push(x, y + (strapTopY(x) - BAND.b), z);
+        }
+      }
+      for (let vi = 0; vi < V; vi++) for (let ui = 0; ui < U; ui++) {
+        const a = vi * U + ui, b = vi * U + ((ui + 1) % U), c = (vi + 1) * U + ((ui + 1) % U), d = (vi + 1) * U + ui;
+        idx.push(a, d, b, b, d, c);
+      }
+      return indexed(pos, idx);
+    }
+    function headbandGeometry() {
+      const a = 78, b = 92, p = 2.3, th0 = -28, th1 = 208, t = 5.4, hBase = 15, hFront = 22, r = 1.9, N = 300, seg = 6;
+      const hAt = (th) => { const d = Math.abs(th - Math.PI / 2); return hBase + (hFront - hBase) * (1 - sm(16 * D2R, 42 * D2R, d)); };
+      const st = [];
+      for (let i = 0; i <= N; i++) {
+        const th = (th0 + ((th1 - th0) * i) / N) * D2R, c = Math.cos(th), s = Math.sin(th);
+        const x = a * spow(c, 2 / p), z = b * spow(s, 2 / p);
+        let gx = (p * Math.abs(x / a) ** (p - 1) * Math.sign(x)) / a, gz = (p * Math.abs(z / b) ** (p - 1) * Math.sign(z)) / b;
+        const gl2 = Math.hypot(gx, gz) || 1;
+        st.push({ x, z, nx: gx / gl2, nz: gz / gl2, h: hAt(th) });
+      }
+      const M = (seg + 1) * 4, pos = [], idx = [];
+      for (const q of st) for (const [n, v] of profile(t / 2, q.h, Math.min(r, t / 2 - 0.05), seg)) pos.push(q.x + q.nx * n, v + q.h / 2, q.z + q.nz * n);
+      for (let i = 0; i < st.length - 1; i++) for (let j = 0; j < M; j++) {
+        const a0 = i * M + j, b0 = (i + 1) * M + j, c0 = (i + 1) * M + ((j + 1) % M), d0 = i * M + ((j + 1) % M);
+        idx.push(a0, b0, d0, b0, c0, d0);
+      }
+      return { g: indexed(pos, idx), ends: [st[0], st[st.length - 1]], front: st[Math.round(st.length * (90 - th0) / (th1 - th0))] };
+    }
+    function radialTex(stops) {
+      const c = document.createElement('canvas'); c.width = c.height = 128;
+      const g = c.getContext('2d');
+      const gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+      for (const [o, col] of stops) gr.addColorStop(o, col);
+      g.fillStyle = gr; g.fillRect(0, 0, 128, 128);
+      const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
+      return t;
+    }
+
+    // ---- the band ----
+    const strapGeo = strapGeometry(), podGeo = podGeometry();
+    const strapMat = new THREE.MeshPhysicalMaterial({ roughness: 0.78, metalness: 0, sheen: 0.6, sheenRoughness: 0.5 });
+    const podMat = new THREE.MeshPhysicalMaterial({ metalness: 1, roughness: 0.42 });
+    const lightMat = new THREE.MeshStandardMaterial({ color: 0x000000, roughness: 0.4, emissiveIntensity: 0.2 });
+    const holder = new THREE.Group(), leanG = new THREE.Group(), band = new THREE.Group();
+    scene.add(holder); holder.add(leanG); leanG.add(band);
+    const strap = new THREE.Mesh(strapGeo, strapMat);
+    const pod = new THREE.Mesh(podGeo, podMat);
+    pod.position.y = BAND.b + BAND.thick / 2 + POD.B * POD.lift;
+    const yTop = pod.position.y + POD.B;
+    const lightM = new THREE.Mesh(new THREE.CylinderGeometry(1.15, 1.15, 0.5, 40), lightMat);
+    lightM.position.y = yTop - 0.22;
+    band.add(strap, pod, lightM);
+    const glowTex = radialTex([[0, 'rgba(255,255,255,1)'], [0.22, 'rgba(255,255,255,0.5)'], [1, 'rgba(255,255,255,0)']]);
+    const glowMat = new THREE.SpriteMaterial({ map: glowTex, transparent: true, depthWrite: false, opacity: 0 });
+    const glow = new THREE.Sprite(glowMat); glow.position.set(0, yTop + 1.4, 0); band.add(glow);
+    const spill = new THREE.PointLight('#ffb050', 0, 0, 2); spill.position.set(0, yTop + 3.5, 0); band.add(spill);
+    const ringU = { uR: { value: new THREE.Vector3() }, uA: { value: new THREE.Vector3() }, uW: { value: 0.3 }, uS: { value: 140 }, uC: { value: C('#E8A64B') } };
+    const rings = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), new THREE.ShaderMaterial({
+      uniforms: ringU, transparent: true, depthWrite: false, side: THREE.DoubleSide,
+      vertexShader: 'varying vec2 vUv;\nvoid main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+      fragmentShader: 'uniform vec3 uR; uniform vec3 uA; uniform float uW; uniform float uS; uniform vec3 uC; varying vec2 vUv;\nfloat ring(float d, float r, float a) { return a * (1.0 - smoothstep(0.0, uW, abs(d - r))); }\nvoid main() {\n  float d = length(vUv - 0.5) * uS;\n  float a = max(max(ring(d, uR.x, uA.x), ring(d, uR.y, uA.y)), ring(d, uR.z, uA.z));\n  if (a < 0.004) discard;\n  gl_FragColor = vec4(uC, a);\n  #include <colorspace_fragment>\n}',
+    }));
+    rings.rotation.x = -Math.PI / 2; rings.scale.set(140, 140, 1); rings.position.y = yTop + 0.25; band.add(rings);
+
+    // the lowest point of the strap for a given lean, so the band stands on the floor
+    const sp = strapGeo.attributes.position;
+    const LOW = new Map();
+    const lowAt = (lean) => {
+      const k = Math.round(lean * 2) / 2;
+      if (!LOW.has(k)) {
+        const s = Math.sin(k * D2R), c = Math.cos(k * D2R);
+        let m = 1e9;
+        for (let i = 0; i < sp.count; i += 2) { const y = sp.getX(i) * s + sp.getY(i) * c; if (y < m) m = y; }
+        LOW.set(k, m);
+      }
+      return LOW.get(k);
+    };
+
+    // floor reflection (hero): a mirrored copy that fades with depth
+    const fadeU = { uFloor: { value: 0 }, uFade: { value: 30 }, uOp: { value: 0 } };
+    const fadeMat = (mat) => {
+      const m = mat.clone();
+      m.transparent = true; m.depthWrite = false;
+      m.onBeforeCompile = (sh) => {
+        Object.assign(sh.uniforms, fadeU);
+        sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nvarying float vWY;').replace('#include <project_vertex>', '#include <project_vertex>\nvWY = (modelMatrix * vec4(transformed, 1.0)).y;');
+        sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nvarying float vWY;\nuniform float uFloor; uniform float uFade; uniform float uOp;').replace('#include <dithering_fragment>', '#include <dithering_fragment>\ngl_FragColor.a *= uOp * clamp(1.0 - (uFloor - vWY) / uFade, 0.0, 1.0);');
+      };
+      m.customProgramCacheKey = () => 'hs-fade';
+      return m;
+    };
+    const mStrapMat = fadeMat(strapMat), mPodMat = fadeMat(podMat), mLightMat = fadeMat(lightMat);
+    const mirror = new THREE.Group(); mirror.matrixAutoUpdate = false; scene.add(mirror);
+    const mPod = new THREE.Mesh(podGeo, mPodMat); mPod.position.copy(pod.position);
+    const mLight = new THREE.Mesh(lightM.geometry, mLightMat); mLight.position.copy(lightM.position);
+    const mGlowMat = new THREE.SpriteMaterial({ map: glowTex, transparent: true, depthWrite: false, opacity: 0 });
+    const mGlow = new THREE.Sprite(mGlowMat); mGlow.position.copy(glow.position);
+    mirror.add(new THREE.Mesh(strapGeo, mStrapMat), mPod, mLight, mGlow);
+    const reflM = new THREE.Matrix4();
+
+    // soft contact shadows (paper sections)
+    const blobTex = radialTex([[0, 'rgba(0,0,0,1)'], [0.35, 'rgba(0,0,0,0.5)'], [1, 'rgba(0,0,0,0)']]);
+    const blobMat = new THREE.MeshBasicMaterial({ map: blobTex, color: '#0d1519', transparent: true, depthWrite: false, opacity: 0 });
+    const blob = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), blobMat); blob.rotation.x = -Math.PI / 2; scene.add(blob);
+    const blob2Mat = blobMat.clone();
+    const blob2 = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), blob2Mat); blob2.rotation.x = -Math.PI / 2; scene.add(blob2);
+
+    // ---- the headband (system view) ----
+    const hb = headbandGeometry();
+    const headSoft = new THREE.MeshPhysicalMaterial({ roughness: 0.78, sheen: 0.6, sheenRoughness: 0.5, side: THREE.DoubleSide, transparent: true });
+    const headMetal = new THREE.MeshPhysicalMaterial({ metalness: 1, roughness: 0.42, transparent: true });
+    const headBrass = new THREE.MeshPhysicalMaterial({ color: '#c99a5b', metalness: 1, roughness: 0.3, transparent: true });
+    const head = new THREE.Group();
+    head.add(new THREE.Mesh(hb.g, headSoft));
+    hb.ends.forEach((e, i) => {
+      const tx = i === 0 ? e.nz : -e.nz, tz = i === 0 ? -e.nx : e.nx;
+      const s = new THREE.Mesh(new THREE.SphereGeometry(1, 40, 24), headMetal);
+      s.scale.set(6.5, 8.5, 13);
+      s.position.set(e.x + tx * 6 - e.nx * 1.5, 8.5, e.z + tz * 6 - e.nz * 1.5);
+      s.lookAt(s.position.x + tx, 8.5, s.position.z + tz);
+      head.add(s);
+    });
+    {
+      const f = hb.front;
+      const inlay = new THREE.Mesh(new THREE.BoxGeometry(18, 1.3, 0.8), headBrass);
+      inlay.position.set(f.x + f.nx * 3.0, f.h * 0.62, f.z + f.nz * 3.0);
+      inlay.lookAt(inlay.position.x + f.nx, inlay.position.y, inlay.position.z + f.nz);
+      head.add(inlay);
+    }
+    const HEAD_POS = new THREE.Vector3(-6, lowAt(-14), -40);
+    head.position.copy(HEAD_POS);
+    scene.add(head);
+    // framing: the band alone, and band + headband together
+    leanG.rotation.z = -14 * D2R; scene.updateMatrixWorld(true);
+    const bbBand = new THREE.Box3().setFromObject(strap).union(new THREE.Box3().setFromObject(pod));
+    const R_BAND = bbBand.getSize(new THREE.Vector3()).length() / 2 * 0.86;
+    const bbSys = bbBand.clone().union(new THREE.Box3().setFromObject(head));
+    const C_SYS = bbSys.getCenter(new THREE.Vector3());
+    const R_SYS = bbSys.getSize(new THREE.Vector3()).length() / 2 * 0.8;
+    head.visible = false;
+
+    // ---- camera and lights (lights ride with the camera, so every angle is lit the same way) ----
+    const FOV = 22;
+    const camera = new THREE.PerspectiveCamera(FOV, 1, 1, 10000);
+    scene.add(camera);
+    const toScene = new THREE.Object3D(); toScene.position.set(0, 0, -100);
+    const toCam = new THREE.Object3D();
+    const key = new THREE.DirectionalLight('#ffffff', 2.2); key.position.set(-60, 100, 60); key.target = toScene;
+    const rim = new THREE.DirectionalLight('#d8e6f2', 0.8); rim.position.set(60, 50, -300); rim.target = toCam;
+    const rim2 = new THREE.DirectionalLight('#d8e6f2', 0); rim2.position.set(-80, 30, -300); rim2.target = toCam;
+    camera.add(toScene, toCam, key, rim, rim2);
+
+    // ---- finishes ----
+    const FIN_HEX = {
+      night: ['#161d22', '#6f808b', '#3d464d', 0.42, '#ffae4a'],
+      mist: ['#b6c1c8', '#f4f8fa', '#d9dfe2', 0.38, '#ffae4a'],
+      brass: ['#a99e8f', '#f3eee6', '#d2ad74', 0.38, '#ffcf8a'],
+      sage: ['#5e6d62', '#d9e3da', '#d9dfe2', 0.38, '#ffae4a'],
+      dusk: ['#2d3748', '#8592a8', '#3d464d', 0.42, '#ffae4a'],
+      stone: ['#918c85', '#f2ede6', '#d2ad74', 0.38, '#ffcf8a'],
+    };
+    const FIN = {};
+    for (const [k, v] of Object.entries(FIN_HEX)) FIN[k] = { strap: C(v[0]), sheen: C(v[1]), pod: C(v[2]), rough: v[3], light: C(v[4]) };
+    const cloneFin = (f) => ({ strap: f.strap.clone(), sheen: f.sheen.clone(), pod: f.pod.clone(), rough: f.rough, light: f.light.clone() });
+    const sel = cloneFin(FIN[state.finish] || FIN.night);
+    let selTarget = FIN[state.finish] || FIN.night;
+
+    // ---- product-page views ----
+    const PRE = {
+      '34': { az: 34, el: 20, lean: -14, head: 0 },
+      profile: { az: 62, el: 12, lean: 0, head: 0 },
+      top: { az: 15, el: 66, lean: 0, head: 0 },
+      rear: { az: 215, el: 24, lean: 14, head: 0 },
+      system: { az: 24, el: 34, lean: -14, head: 1 },
+    };
+    const pre = { ...PRE['34'] }, preT = { ...PRE['34'] };
+    const user = { az: 0, el: 0, vaz: 0 };
+
+    // ---- poses ----
+    const HK = [[0, -40, 8, 0.86], [0.4, 24, 14, 1.0], [0.5, 30, 18, 1.04], [0.62, 36, 40, 1.14], [0.74, 40, 62, 1.28], [0.88, 34, 26, 1.04], [1, 32, 16, 1.0]];
+    const HR = [0.48, 0.55, 0.62, 0.69];
+    let Wc = 1, Hc = 1, narrow = false;
+    // landing: the band fades in with its light off, then the light switches on with a tap
+    const INTRO_DELAY = 1.2;
+    let introStart = null, introDone = false;
+    function introLight() {
+      if (introStart === null) return 0;
+      const t = (performance.now() - introStart) / 1000 - INTRO_DELAY; // real time, so slow devices don't stretch the wait
+      if (t <= 0) return 0;
+      if (!introDone) { introDone = true; pulse(false); kickMarks(180); }
+      return clamp01(t / 0.6);
+    }
+    // the band itself rises out of darkness after its light comes on
+    function introWake() {
+      if (introStart === null) return 0;
+      const t = (performance.now() - introStart) / 1000 - INTRO_DELAY - 0.35;
+      const u = clamp01(t / 2.2);
+      return u * u * (3 - 2 * u);
+    }
+    function heroPose(p) {
+      let i = 0;
+      while (i < HK.length - 2 && HK[i + 1][0] <= p) i++;
+      const a = HK[i], b = HK[i + 1], u = ease(clamp01((p - a[0]) / (b[0] - a[0])));
+      return { az: lerp(a[1], b[1], u), el: lerp(a[2], b[2], u), lean: -14, fit: (narrow ? 0.8 : 0.72) * lerp(a[3], b[3], u), light: introLight(), dark: 1, floor: 1, shadow: 0, head: 0, loop: 0, hover: 0, fin: FIN.night };
+    }
+    const pdpPose = () => ({ az: pre.az + user.az, el: clamp(pre.el + user.el, -8, 82), lean: pre.lean, fit: lerp(0.8, 0.86, pre.head), light: 0.45, dark: 0, floor: 0, shadow: 1, head: pre.head, loop: 0, hover: 1 - pre.head, fin: sel });
+    const systemPose = (a) => ({ az: 24 + 30 * clamp((Hc * 0.5 - a.y) / (Hc * 0.5), -1, 1), el: 34, lean: -14, fit: 1.0, light: 0.45, dark: 0, floor: 0, shadow: 1, head: 1, loop: 0, hover: 0, fin: sel });
+    const ringText = document.getElementById('ring-text');
+    function ringPose(a) {
+      const e = clamp01((a.y - Hc * 0.5) / (Hc * 0.55));
+      if (takenOver) ringText.style.opacity = (1 - sm(0.04, 0.4, e)).toFixed(3);
+      return { az: 72 * ease(e), el: 6 + 10 * e, lean: 0, fit: 1.2, light: 0.45, dark: 0, floor: 0, shadow: 1, head: 0, loop: 1, hover: 0.5, fin: sel };
+    }
+    const poseOf = (a, p) => (a.id === 'hero' ? heroPose(p) : a.id === 'pdp' ? pdpPose() : a.id === 'system' ? systemPose(a) : ringPose(a));
+    const KEYS = ['az', 'el', 'lean', 'fit', 'light', 'dark', 'floor', 'shadow', 'head', 'loop', 'hover'];
+    // the floor reflection leaves early in a flight; the headband arrives late
+    const CURVE = { floor: (t) => sm(0, 0.35, t), head: (t) => sm(0.45, 1, t) };
+    function mixPose(A, B, t) {
+      if (A === B || t <= 0) return A;
+      const o = {};
+      for (const k of KEYS) o[k] = A[k] + (B[k] - A[k]) * (CURVE[k] ? CURVE[k](t) : t);
+      o.fin = { strap: A.fin.strap.clone().lerp(B.fin.strap, t), sheen: A.fin.sheen.clone().lerp(B.fin.sheen, t), pod: A.fin.pod.clone().lerp(B.fin.pod, t), rough: lerp(A.fin.rough, B.fin.rough, t), light: A.fin.light.clone().lerp(B.fin.light, t) };
+      return o;
+    }
+
+    // ---- anchors: the band rests in a slot, then travels to the next one as you scroll ----
+    const anchorEls = [...document.querySelectorAll('[data-anchor]')];
+    const anchors = anchorEls.map((el) => ({ el, id: el.dataset.anchor, seg: +(el.dataset.seg || 1), cy: +(el.dataset.cy || 0.5) }));
+    const segs = [...new Set(anchors.map((a) => a.seg))].map((s) => anchors.filter((a) => a.seg === s));
+    const heroSlot = anchors.find((a) => a.id === 'hero');
+    let heroRest = 0;
+    function measureAnchors() {
+      for (const a of anchors) {
+        const r = a.el.getBoundingClientRect();
+        a.w = r.width; a.h = r.height; a.x = r.left + r.width / 2; a.y = r.top + r.height * a.cy;
+        a.hin = a.id === 'hero' ? Infinity : Hc * 0.72;
+        a.hout = a.id === 'hero' ? heroRest - 0.5 : Hc * 0.28;
+      }
+    }
+    function placeSeg(list) {
+      let j = -1;
+      for (let i = 0; i < list.length; i++) if (list[i].y <= list[i].hin) j = i;
+      if (j < 0) return { a: list[0], b: list[0], f: 0 };
+      const a = list[j];
+      if (a.y >= a.hout || j === list.length - 1) return { a, b: a, f: 0 };
+      const b = list[j + 1];
+      const dOut = a.hout - a.y, dIn = Math.max(0, b.y - b.hin);
+      return { a, b, f: dOut / Math.max(1e-6, dOut + dIn) };
+    }
+
+    // ---- interaction ----
+    const ptr = { x: 0, y: 0, sx: 0, sy: 0, cx: -1, cy: -1, moved: false };
+    const finePointer = matchMedia('(pointer: fine)').matches;
+    addEventListener('pointermove', (e) => {
+      ptr.cx = e.clientX; ptr.cy = e.clientY; ptr.moved = true;
+      if (finePointer) { ptr.x = (e.clientX / Wc) * 2 - 1; ptr.y = (e.clientY / Hc) * 2 - 1; }
+    }, { passive: true });
+    let clock = 0, pulseT = -10;
+    function pulse(buzz) {
+      pulseT = clock;
+      if (buzz) { try { if (navigator.vibrate) navigator.vibrate(14); } catch (e) { /* not allowed here */ } }
+    }
+    const raycaster = new THREE.Raycaster(), ndc = new THREE.Vector2();
+    let visible = false;
+    function hitBand(x, y) {
+      if (!visible || !takenOver) return false;
+      ndc.set((x / Wc) * 2 - 1, -(y / Hc) * 2 + 1);
+      raycaster.setFromCamera(ndc, camera);
+      return raycaster.intersectObjects([strap, pod], false).length > 0;
+    }
+    let down = null;
+    document.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0 || e.target.closest('a, button, input, select, label, summary, textarea, dialog')) { down = null; return; }
+      down = { x: e.clientX, y: e.clientY, t: performance.now() };
+    });
+    document.addEventListener('pointerup', (e) => {
+      if (!down) return;
+      const quick = performance.now() - down.t < 450 && Math.hypot(e.clientX - down.x, e.clientY - down.y) < 8;
+      down = null;
+      if (quick && hitBand(e.clientX, e.clientY)) pulse(true);
+    });
+    // drag to turn, in the product gallery
+    let drag = null;
+    gMainBox.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      drag = { id: e.pointerId, x: e.clientX, y: e.clientY, t: performance.now() };
+      user.vaz = 0;
+      try { gMainBox.setPointerCapture(e.pointerId); } catch (err) { /* capture is optional */ }
+      gMainBox.classList.add('dragging');
+    });
+    gMainBox.addEventListener('pointermove', (e) => {
+      if (!drag || e.pointerId !== drag.id) return;
+      const now = performance.now(), dx = e.clientX - drag.x, dy = e.clientY - drag.y;
+      user.az -= dx * 0.45;
+      user.el = clamp(user.el + dy * 0.28, -8 - pre.el, 82 - pre.el);
+      user.vaz = (-dx * 0.45) / Math.max(0.008, (now - drag.t) / 1000);
+      drag.x = e.clientX; drag.y = e.clientY; drag.t = now;
+    });
+    const endDrag = (e) => { if (drag && e.pointerId === drag.id) { if (performance.now() - drag.t > 80) user.vaz = 0; drag = null; gMainBox.classList.remove('dragging'); } };
+    gMainBox.addEventListener('pointerup', endDrag);
+    gMainBox.addEventListener('pointercancel', endDrag);
+
+    // ---- frame loop ----
+    let last = performance.now(), prevP = 0, wasVisible = false, firstFrame = true, frameN = 0, hovering = false;
+    const tmp = new THREE.Vector3(), ref = new THREE.Vector3();
+    function resize() {
+      Wc = window.innerWidth; Hc = window.innerHeight; narrow = Wc <= 920;
+      renderer.setSize(Wc, Hc, false);
+      const slot = heroSlot.el;
+      heroRest = stickTop + slot.offsetTop + slot.offsetHeight * heroSlot.cy;
+    }
+    resize();
+    addEventListener('resize', resize);
+    let stopped = false, misses = 0;
+    const gTag = document.getElementById('g-tag');
+    // any failure: put the film and the regular images back, and say why in the console
+    function fail(err) {
+      if (stopped) return;
+      stopped = true;
+      console.warn('Live 3D view stopped; showing the pre-rendered film instead.', err);
+      canvas.remove();
+      root.classList.remove('gl', 'on-band');
+      ringText.style.opacity = '';
+      gTag.textContent = 'Concept render';
+      gMainBox.removeAttribute('role'); gMainBox.removeAttribute('aria-label');
+      gl = null;
+      try { renderer.dispose(); } catch (e) { /* nothing left to free */ }
+      hooks.failed(takenOver);
+    }
+    canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); fail(new Error('the 3D context was lost')); });
+    // proof that the band really reached the screen: read back a few rows of pixels across it
+    const probe = new Uint8Array(4 * 512);
+    function drewSomething(pl, sizePx) {
+      const g = renderer.getContext();
+      renderer.setRenderTarget(null);
+      const sx = g.drawingBufferWidth / Wc, sy = g.drawingBufferHeight / Hc;
+      const w = Math.max(1, Math.min(512, Math.round(sizePx * 1.1 * sx)));
+      const x0 = clamp(Math.round((pl.x - sizePx * 0.55) * sx), 0, Math.max(0, g.drawingBufferWidth - w));
+      for (const f of [0, -0.2, 0.2]) {
+        const y = clamp(Math.round((Hc - (pl.y + f * sizePx)) * sy), 0, g.drawingBufferHeight - 1);
+        g.readPixels(x0, y, w, 1, g.RGBA, g.UNSIGNED_BYTE, probe);
+        for (let i = 3; i < w * 4; i += 4) if (probe[i] > 24) return true;
+      }
+      return false;
+    }
+    function takeover() {
+      if (!hooks.ready()) { stopped = true; canvas.remove(); gl = null; return; } // the film already took the hero
+      takenOver = true;
+      root.classList.add('gl', 'hero-live');
+      canvas.classList.add('on');
+      setTimeout(() => canvas.classList.add('live'), 1000);
+      introStart = performance.now();
+      gTag.textContent = '3D · concept';
+      gMainBox.setAttribute('role', 'img');
+      gMainBox.setAttribute('aria-label', '3D view of the ' + byId[state.finish].name + ' band. Drag to turn it.');
+    }
+
+    function frame(now) {
+      if (stopped) return;
+      requestAnimationFrame(frame);
+      try { step(now); } catch (err) { fail(err); }
+    }
+    function step(now) {
+      const dt = Math.min(0.05, Math.max(0.001, (now - last) / 1000));
+      last = now; clock += dt; frameN++;
+      if (window.innerWidth !== Wc || window.innerHeight !== Hc) resize();
+
+      // hero progress drives the beat line and the hero pose
+      const p = heroProgress();
+      heroUI(p);
+
+      // animate product-page state
+      const kp = 1 - Math.exp(-dt * 5);
+      for (const k of ['az', 'el', 'lean', 'head']) pre[k] += (preT[k] - pre[k]) * kp;
+      if (!drag) { user.az += user.vaz * dt; user.vaz *= Math.exp(-dt * 4); }
+      const kf = 1 - Math.exp(-dt * 8);
+      sel.strap.lerp(selTarget.strap, kf); sel.sheen.lerp(selTarget.sheen, kf); sel.pod.lerp(selTarget.pod, kf); sel.light.lerp(selTarget.light, kf);
+      sel.rough += (selTarget.rough - sel.rough) * kf;
+      const ks = 1 - Math.exp(-dt * 3);
+      ptr.sx += (ptr.x - ptr.sx) * ks; ptr.sy += (ptr.y - ptr.sy) * ks;
+
+      // where is the band, and in what pose?
+      measureAnchors();
+      let best = null;
+      for (const list of segs) {
+        const pl = placeSeg(list);
+        const sizeA = poseOf(pl.a, p).fit * Math.min(pl.a.w, pl.a.h);
+        const sizeB = pl.b === pl.a ? sizeA : poseOf(pl.b, p).fit * Math.min(pl.b.w, pl.b.h);
+        pl.x = lerp(pl.a.x, pl.b.x, pl.f); pl.y = lerp(pl.a.y, pl.b.y, pl.f); pl.size = lerp(sizeA, sizeB, ease(pl.f));
+        const hs = pl.size * 0.75;
+        pl.dist = Math.max(0, -(pl.y + hs)) + Math.max(0, pl.y - hs - Hc);
+        if (!best || pl.dist < best.dist) best = pl;
+      }
+      const pl = best;
+      const PA = poseOf(pl.a, p), PB = pl.b === pl.a ? PA : poseOf(pl.b, p);
+      const P = mixPose(PA, PB, ease(pl.f));
+      const heroW = pl.a.id === 'hero' ? 1 - pl.f : 0;
+
+      // the "It taps" moment in the hero
+      if (heroW > 0.5 && prevP < 0.47 && p >= 0.47) pulse(false);
+      prevP = p;
+
+      // tap response: a quick haptic-style wobble, a light flash and ripples
+      const tP = clock - pulseT;
+      let wobAz = 0, wobLean = 0, flash = 0;
+      if (tP >= 0 && tP < 1.6) {
+        const w = Math.exp(-tP / 0.16) * Math.sin(2 * Math.PI * 15 * tP);
+        wobAz = 3.4 * w; wobLean = 1.4 * w; flash = Math.exp(-tP / 0.5);
+      }
+
+      // transforms
+      const lean = P.lean + wobLean;
+      leanG.rotation.z = lean * D2R;
+      holder.position.y = P.hover * (1.6 + 0.9 * Math.sin(clock * 1.3));
+      scene.updateMatrixWorld(true);
+
+      // materials
+      strapMat.color.copy(P.fin.strap); strapMat.sheenColor.copy(P.fin.sheen);
+      podMat.color.copy(P.fin.pod); podMat.roughness = P.fin.rough;
+      const L = Math.min(1.7, P.light + flash);
+      lightMat.emissive.copy(P.fin.light); lightMat.emissiveIntensity = 0.12 + 4.2 * L;
+      glowMat.color.copy(P.fin.light); glowMat.opacity = Math.min(1, L * lerp(0.32, 0.8, P.dark));
+      glow.scale.setScalar(20 + 12 * L);
+      spill.intensity = 420 * L * lerp(0.5, 1, P.dark);
+
+      // lighting mood: studio on paper, rim-lit on night
+      const W = lerp(1, introWake(), P.dark); // 0 = pitch black at landing
+      key.intensity = lerp(2.4, 1.7, P.dark) * W;
+      rim.intensity = lerp(0.9, 3.4, P.dark) * W;
+      rim2.intensity = lerp(0, 2.2, P.dark) * W;
+      scene.environmentIntensity = lerp(1.0, 0.56, P.dark) * W;
+
+      // camera framing: the reference point lands on the slot, at the slot's size
+      ref.copy(leanG.localToWorld(tmp.set(0, 4 * (1 - P.loop), 0)));
+      if (P.head > 0) ref.lerp(C_SYS, P.head);
+      const R = lerp(R_BAND, R_SYS, P.head);
+      const sizePx = Math.max(24, pl.size);
+      const d = (R * Hc) / (sizePx * Math.tan((FOV / 2) * D2R));
+      const tiltAz = finePointer && !drag ? ptr.sx * 8 : 0, tiltEl = finePointer && !drag ? -ptr.sy * 4 : 0;
+      const az = (P.az + tiltAz + wobAz) * D2R;
+      const el = Math.max(P.floor > 0.5 ? 3 : -10, P.el + tiltEl) * D2R;
+      camera.position.set(ref.x + d * Math.cos(el) * Math.sin(az), ref.y + d * Math.sin(el), ref.z + d * Math.cos(el) * Math.cos(az));
+      camera.lookAt(ref);
+      camera.near = Math.max(0.5, d * 0.2); camera.far = d * 6;
+      camera.aspect = Wc / Hc;
+      camera.setViewOffset(Wc, Hc, Wc / 2 - pl.x, Hc / 2 - pl.y, Wc, Hc);
+      camera.updateProjectionMatrix();
+      camera.updateMatrixWorld(true);
+
+      // ripples: scroll-driven in the hero, time-driven after a tap
+      const pxPerUnit = Hc / (2 * d * Math.tan((FOV / 2) * D2R));
+      ringU.uW.value = 1.2 / pxPerUnit;
+      const rr = [0, 0, 0], ra = [0, 0, 0];
+      if (heroW > 0.001) HR.forEach((t0, i) => {
+        const age = (p - t0) / 0.2;
+        if (age > 0 && age < 1) { const s = i % 3; rr[s] = 16 + 34 * (1 - (1 - age) ** 2.2); ra[s] = 0.9 * (1 - age) ** 1.4 * sm(0, 0.08, age) * heroW; }
+      });
+      for (let i = 0; i < 3; i++) {
+        const age = (tP - i * 0.17) / 1.0;
+        if (age > 0 && age < 1) { const a = 0.95 * (1 - age) ** 1.5 * sm(0, 0.06, age); if (a > ra[i]) { ra[i] = a; rr[i] = 15 + 32 * (1 - (1 - age) ** 2.4); } }
+      }
+      ringU.uR.value.set(rr[0], rr[1], rr[2]); ringU.uA.value.set(ra[0], ra[1], ra[2]);
+      ringU.uC.value.copy(P.dark > 0.5 ? C('#E8A64B') : C('#B8782A'));
+
+      // floor reflection
+      const ground = lowAt(lean) + holder.position.y;
+      mirror.visible = P.floor > 0.01;
+      if (mirror.visible) {
+        reflM.set(1, 0, 0, 0, 0, -1, 0, 2 * ground, 0, 0, 1, 0, 0, 0, 0, 1);
+        mirror.matrix.multiplyMatrices(reflM, leanG.matrixWorld);
+        mirror.updateMatrixWorld(true);
+        fadeU.uFloor.value = ground; fadeU.uOp.value = 0.9 * P.floor;
+        mStrapMat.color.copy(strapMat.color); mStrapMat.sheenColor.copy(strapMat.sheenColor);
+        mPodMat.color.copy(podMat.color); mPodMat.roughness = podMat.roughness;
+        mLightMat.emissive.copy(lightMat.emissive); mLightMat.emissiveIntensity = lightMat.emissiveIntensity;
+        mGlowMat.color.copy(glowMat.color); mGlowMat.opacity = glowMat.opacity * 0.45 * P.floor; mGlow.scale.copy(glow.scale);
+      }
+
+      // contact shadows
+      const base = lowAt(P.lean);
+      blob.visible = P.shadow > 0.01;
+      if (blob.visible) {
+        const h = holder.position.y;
+        blob.position.set(0, base - 0.05, 0);
+        blob.scale.set(64 + 5 * h, 26 + 2 * h, 1);
+        blobMat.opacity = P.shadow * 0.46 * Math.max(0.4, 1 - 0.08 * h);
+      }
+
+      // headband
+      head.visible = P.head > 0.01;
+      blob2.visible = head.visible && P.shadow > 0.01;
+      if (head.visible) {
+        const o = clamp01(P.head * 1.15);
+        headSoft.opacity = headMetal.opacity = headBrass.opacity = o;
+        headSoft.color.copy(P.fin.strap); headSoft.sheenColor.copy(P.fin.sheen);
+        headMetal.color.copy(P.fin.pod); headMetal.roughness = P.fin.rough;
+        head.scale.setScalar(0.9 + 0.1 * ease(o));
+        blob2.position.set(HEAD_POS.x, HEAD_POS.y - 0.05, HEAD_POS.z);
+        blob2.scale.set(200, 220, 1);
+        blob2Mat.opacity = 0.16 * o * P.shadow;
+      }
+
+      // fade between distant slots on narrow screens, so the band never sits over text
+      let o = 1;
+      if (narrow && pl.a.id === 'pdp' && pl.b.id === 'system') o = 1 - sm(0.1, 0.42, pl.f) + sm(0.58, 0.9, pl.f);
+      canvas.style.setProperty('--gl-o', o.toFixed(3));
+
+      // draw only while the band is on screen
+      const hs = sizePx * (heroW > 0 ? 0.9 : 0.75);
+      visible = pl.x + hs > 0 && pl.x - hs < Wc && pl.y + hs > 0 && pl.y - hs < Hc && o > 0.01;
+      if (visible) {
+        renderer.render(scene, camera);
+        if (!takenOver) {
+          if (drewSomething(pl, sizePx)) takeover();
+          else if (++misses > 3) throw new Error('the 3D view drew nothing on screen');
+        }
+      } else if (wasVisible) renderer.clear();
+      wasVisible = visible;
+
+      // pointer over the band: show it can be tapped
+      if (finePointer && ptr.moved && frameN % 5 === 0) {
+        ptr.moved = false;
+        const h2 = hitBand(ptr.cx, ptr.cy);
+        if (h2 !== hovering) { hovering = h2; root.classList.toggle('on-band', h2); }
+      }
+    }
+
+    // everything built: start drawing (still invisible); takeover() reveals it once a frame is proven on screen
+    document.body.prepend(canvas);
+    requestAnimationFrame(frame);
+
+    return {
+      // the film took the hero first: stop quietly
+      abort() { if (!takenOver && !stopped) { stopped = true; canvas.remove(); gl = null; } },
+      finish(id) { if (FIN[id]) selTarget = FIN[id]; pulse(false); },
+      angle(a) {
+        const t = PRE[a]; if (!t) return;
+        pre.az += user.az; pre.el += user.el; user.az = 0; user.el = 0; user.vaz = 0;
+        let az = t.az;
+        while (az - pre.az > 180) az -= 360;
+        while (az - pre.az < -180) az += 360;
+        Object.assign(preT, t, { az });
+      },
+      pulse,
+    };
+  }
+
+  /* ---------- boot: the film shows the band at once; live 3D takes over only after it has proven it draws ---------- */
+  const film2d = setupFrames();
+  if (!RM) {
+    let decided = false;
+    const useFilm = (err) => {
+      if (decided) return;
+      decided = true;
+      if (err) console.warn('Live 3D view unavailable; showing the pre-rendered film.', err);
+      if (gl) gl.abort();
+      film2d.play(false);
+    };
+    setTimeout(() => useFilm(new Error('the 3D library took too long to load')), 3500);
+    import(THREE_URL).then((THREE) => {
+      if (decided) return;
+      try {
+        gl = start3D(THREE, {
+          ready: () => { if (decided) return false; decided = true; film2d.stop(); return true; },
+          failed: (afterTakeover) => { if (afterTakeover) film2d.play(true); else useFilm(new Error('the 3D view failed before it was shown')); },
+        });
+      } catch (err) { useFilm(err); }
+    }, useFilm);
+  }
+})();
+</script>
+
+</body>
+</html>

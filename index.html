@@ -229,6 +229,35 @@ footer a{color:var(--signal)}
 .flinks a:hover{text-decoration:underline}
 .lastword{font-family:var(--display);font-size:clamp(17px,2.2vw,21px);line-height:1.5;font-weight:300;color:var(--ink);max-width:54ch;margin:44px 0 0;padding-top:30px;border-top:1px solid var(--line)}
 .lastword::before{content:"";display:block;width:26px;height:2px;background:var(--signal);margin-bottom:20px}
+
+/* ───────── product card (links to the band store at /band/) ───────── */
+.pwrap{position:absolute;z-index:4;right:22px;top:50%;width:300px;transform:translateY(-50%)}
+.pcard{display:block;position:relative;transform:translateX(24px);opacity:0;
+  background:rgba(13,20,25,.72);backdrop-filter:blur(14px) saturate(1.2);-webkit-backdrop-filter:blur(14px) saturate(1.2);
+  border:1px solid var(--night-line);border-radius:14px;overflow:hidden;color:var(--night-ink);text-decoration:none;
+  box-shadow:0 30px 80px -30px rgba(0,0,0,.9),0 0 0 1px rgba(232,166,75,.06);
+  animation:pcardIn .9s var(--ease) 1.4s forwards;transition:border-color .25s,box-shadow .25s}
+.pcard:hover{border-color:rgba(232,166,75,.55);box-shadow:0 30px 80px -30px rgba(0,0,0,.9),0 0 40px -10px rgba(232,166,75,.35)}
+@keyframes pcardIn{to{opacity:1;transform:none}}
+.pcard .pimg{position:relative;aspect-ratio:1/1;background:#000408 url(band/frames/f_149.webp) center/112% no-repeat;transition:background-size .6s var(--ease)}
+.pcard:hover .pimg{background-size:122%}
+.pcard .pimg::after{content:"";position:absolute;inset:auto 0 0;height:40%;background:linear-gradient(transparent,rgba(13,20,25,.95))}
+.pcard .pnew{position:absolute;top:12px;left:12px;z-index:1;font:500 10.5px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:#E8A64B;
+  padding:6px 9px;border:1px solid rgba(232,166,75,.4);border-radius:999px;background:rgba(6,10,13,.6)}
+.pcard .pbody{padding:2px 20px 20px;position:relative}
+.pcard h3{font-size:22px;font-weight:500;letter-spacing:-.01em}
+.pcard p{font-size:13.5px;line-height:1.5;color:var(--night-mute);margin:6px 0 16px}
+.pcard .pgo{display:flex;align-items:center;justify-content:space-between;font-size:13.5px;font-weight:500;color:#060A0D;background:#E8A64B;border-radius:999px;padding:11px 16px}
+.pcard .pgo span{transition:transform .25s var(--ease)}
+.pcard:hover .pgo span{transform:translateX(4px)}
+.pclose{position:absolute;z-index:5;top:10px;right:10px;width:30px;height:30px;border-radius:50%;border:0;background:rgba(6,10,13,.65);color:var(--night-ink);font-size:17px;line-height:1;cursor:pointer}
+.pclose:hover{background:#E8A64B;color:#060A0D}
+.pwrap.closed{display:none}
+@media(max-width:1080px){.pwrap{position:relative;right:auto;top:auto;width:auto;max-width:460px;margin:34px 0 0;transform:none}.pcard{transform:translateY(16px);display:grid;grid-template-columns:120px 1fr;width:auto;max-width:460px}
+    .pcard .pimg{aspect-ratio:auto;min-height:120px}.pcard .pimg::after{display:none}.pcard .pnew{display:none}
+  .pcard .pbody{padding:16px 46px 16px 18px}.pcard h3{font-size:19px}.pcard p{margin-bottom:12px}}
+@media(min-width:1081px){.hero .heroin>*:not(.pwrap){max-width:min(100%,calc(100% - 340px))}}
+@media (prefers-reduced-motion:reduce){.pcard{animation:none;opacity:1;transform:none}}
 </style>
 
 <nav id="nav">
@@ -241,6 +270,7 @@ footer a{color:var(--signal)}
       <a href="#program">Program</a>
       <a href="#paper">The paper</a>
       <a href="#story">The story</a>
+      <a href="band/">The band</a>
       <a href="#collaborate" class="navcta">Collaborate</a>
     </div>
   </div>
@@ -258,6 +288,17 @@ footer a{color:var(--signal)}
       <a class="btn" href="#what">See how it works</a>
       <a class="btn ghost" href="#paper">Read the research</a>
     </div>
+  <div class="pwrap" id="pwrap">
+    <a class="pcard" href="band/" aria-label="View the Hearing Silence Band product site">
+      <div class="pimg"><span class="pnew">Concept band</span></div>
+      <div class="pbody">
+        <h3>Meet the band</h3>
+        <p>See the wearable we're designing: a quiet tap on the wrist, in 3D.</p>
+        <div class="pgo">View the product site <span aria-hidden="true">→</span></div>
+      </div>
+    </a>
+    <button class="pclose" type="button" aria-label="Hide product card" onclick="this.parentNode.classList.add('closed')">×</button>
+  </div>
   </div>
 </header>
 
@@ -873,7 +914,7 @@ tabs.addEventListener("click",function(e){ var b=e.target.closest(".ptab"); if(b
 showPhase(0);
 
 /* ════════ scrollspy ════════ */
-var links=Array.prototype.slice.call(document.querySelectorAll(".navlinks a"));
+var links=Array.prototype.slice.call(document.querySelectorAll('.navlinks a[href^="#"]'));
 var targets=links.map(function(a){ return document.querySelector(a.getAttribute("href")); }).filter(Boolean);
 if("IntersectionObserver" in window){
   var io=new IntersectionObserver(function(es){
