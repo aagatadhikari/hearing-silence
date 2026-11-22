@@ -585,9 +585,17 @@ footer b{color:#F2EFE6;font-weight:500}
     const top = heroImg.getBoundingClientRect().top - hero.getBoundingClientRect().top;
     for (const [el, fx, fy] of spots) {
       const x = ox + fx*sw, y = oy + fy*sh;
-      const ok = x > 12 && x < W - 160 && y > 40 && y < H - 30;
-      el.classList.toggle('on', ok);
       el.style.left = x + 'px'; el.style.top = (y + top) + 'px';
+      let ok = x > 12 && x < W - 160 && y > 40 && y < H - 30;
+      if (ok) {
+        el.classList.add('on');
+        const r = el.getBoundingClientRect();
+        for (const t of hero.querySelectorAll('h1,.sub,.cta')) {
+          const q = t.getBoundingClientRect();
+          if (r.left < q.right + 24 && r.right > q.left - 24 && r.top < q.bottom + 16 && r.bottom > q.top - 16) ok = false;
+        }
+      }
+      el.classList.toggle('on', ok);
     }
   };
   heroImg.complete ? place() : heroImg.addEventListener('load', place);
